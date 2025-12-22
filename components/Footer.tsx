@@ -18,10 +18,10 @@ export default function Footer() {
                             We are Ranchi's verified rental marketplace. Bridging the gap between owners and tenants with trust, transparency, and technology.
                         </p>
                         <div className="flex gap-4">
-                            <a href="#" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
+                            <a href="https://www.instagram.com/ranchirent/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
                                 <span className="font-bold">Ig</span>
                             </a>
-                            <a href="#" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
+                            <a href="https://www.facebook.com/profile.php?id=61585765550042" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
                                 <span className="font-bold">Fb</span>
                             </a>
                             <a href="#" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
