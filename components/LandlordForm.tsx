@@ -5,6 +5,13 @@ import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle } fro
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhU5xYa1CVrQWJ49VBEsXhSuk_fcUD6Mo1hzm4IgTnaAiTvuYi1xkOx0plDtS9SEGO/exec";
 
+// Extend Window interface for Facebook Pixel
+declare global {
+    interface Window {
+        fbq: any;
+    }
+}
+
 export default function LandlordForm() {
     const [formData, setFormData] = useState({
         name: "",
@@ -43,6 +50,12 @@ export default function LandlordForm() {
             });
 
             setStatus("success");
+
+            // Track Lead in Facebook Pixel
+            if (typeof window !== 'undefined' && window.fbq) {
+                window.fbq('track', 'Lead');
+            }
+
             setFormData({ name: "", phone: "", type: "2 BHK", location: "", rent: "" }); // Reset form
         } catch (error) {
             console.error("Error submitting form", error);
