@@ -6,7 +6,12 @@ import FilterBar from "@/components/FilterBar";
 import PropertyGrid from "@/components/PropertyGrid";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import LocalitySeoContent from "@/components/LocalitySeoContent";
-import { properties } from "@/data/properties";
+import { Property } from "@/data/properties"; // Keep interface, remove static data usage
+import { Loader2 } from "lucide-react";
+
+// ✅ THE NEW FRESH START URL
+// The new deployment URL
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
 
 function SearchContent() {
     const searchParams = useSearchParams();
@@ -15,7 +20,10 @@ function SearchContent() {
         query: searchParams.get("query") || ""
     });
 
-    // Update filters if URL params change (e.g. back button)
+    const [properties, setProperties] = useState<Property[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Update filters if URL params change
     useEffect(() => {
         setFilters({
             locality: searchParams.get("locality") || "",
@@ -23,13 +31,69 @@ function SearchContent() {
         });
     }, [searchParams]);
 
+    // Fetch Properties from Google Sheet
+    useEffect(() => {
+        const fetchProperties = async () => {
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const data = await res.json();
+
+                // Helper to convert Drive URL to Direct Image URL
+                const getDirectUrl = (url: string | null) => {
+                    if (!url) return null;
+                    try {
+                        // Check if it's a Drive Viewer URL
+                        if (url.includes("drive.google.com") && url.includes("/d/")) {
+                            const idMatches = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                            if (idMatches && idMatches[1]) {
+                                // Use Thumbnail API
+                                return `https://drive.google.com/thumbnail?id=${idMatches[1]}&sz=w1000`;
+                            }
+                        }
+                        return url;
+                    } catch (e) {
+                        return url;
+                    }
+                };
+
+                // Map Sheet Data to Website Property Interface
+                const mappedProperties: Property[] = data.map((item: any) => {
+                    const rawImage = item.image ? item.image.split(",")[0] : null;
+                    return {
+                        id: item.id,
+                        title: `${item.type} in ${item.location}`,
+                        location: item.location,
+                        price: `₹${Number(item.rent).toLocaleString()}`,
+                        beds: parseInt(item.type) || 1,
+                        baths: 1,
+                        type: item.type,
+                        furnished: item.furnishing,
+                        available: true,
+                        image: getDirectUrl(rawImage), // Use helper
+                        description: `Verified ${item.type} available for rent in ${item.location}. Preferred for ${item.tenantPref}.`,
+                        amenities: item.amenities ? item.amenities.split(", ") : [],
+                        area: "On Request"
+                    };
+                }).reverse();
+
+                setProperties(mappedProperties);
+                setLoading(false);
+            } catch (error) {
+                console.error("Failed to fetch properties:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchProperties();
+    }, []);
+
     const filteredProperties = properties.filter((property) => {
         // Filter by Locality
         if (filters.locality && !property.location.includes(filters.locality)) {
             return false;
         }
 
-        // Filter by Query (if present)
+        // Filter by Query
         if (filters.query) {
             const term = filters.query.toLowerCase();
             const matchesQuery =
@@ -48,7 +112,6 @@ function SearchContent() {
         ...(filters.locality ? [{ label: filters.locality }] : [])
     ];
 
-    // Determine content based on filters
     const pageTitle = filters.locality
         ? `Flats in ${filters.locality}`
         : "Find Your Dream Home";
@@ -99,7 +162,14 @@ function SearchContent() {
                     </div>
                 </div>
 
-                <PropertyGrid properties={filteredProperties} />
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <Loader2 className="w-10 h-10 text-brand-blue animate-spin mb-4" />
+                        <p className="text-gray-500 font-medium">Fetching verified properties...</p>
+                    </div>
+                ) : (
+                    <PropertyGrid properties={filteredProperties} />
+                )}
 
                 {/* Dynamic SEO Content (Only if locality is selected) */}
                 {filters.locality && (

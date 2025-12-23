@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Hero from "@/components/Hero";
+import VerifiedFeed from "@/components/VerifiedFeed"; // Import Added
 import PropertyGrid from "@/components/PropertyGrid";
-import { properties } from "@/data/properties";
 import { localities } from "@/data/localities";
 import Link from 'next/link';
 import { ShieldCheck, Wallet, Clock, ArrowRight } from "lucide-react";
@@ -20,8 +20,6 @@ export default function Home() {
     if (filters.query) params.set("query", filters.query);
     router.push(`/listings?${params.toString()}`);
   };
-
-  const featuredProperties = properties.slice(0, 3); // Top 3 properties
 
   return (
     <main>
@@ -44,25 +42,8 @@ export default function Home() {
 
 
 
-      {/* Featured Properties Section */}
-      <section className="container mx-auto px-4 py-12 md:py-20 bg-gray-50 rounded-3xl mb-12 md:mb-20">
-        <div className="flex flex-col md:flex-row items-end justify-between gap-4 mb-12 max-w-6xl mx-auto">
-          <div className="text-left">
-            <span className="text-brand-blue font-bold tracking-wider text-xs uppercase mb-2 block">Exclusive Listings</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">Curated Residences</h2>
-          </div>
-          <Link
-            href="/listings"
-            className="text-brand-blue font-bold hover:text-blue-700 flex items-center gap-1 transition-colors"
-          >
-            View All Properties <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="max-w-6xl mx-auto">
-          <PropertyGrid properties={featuredProperties} />
-        </div>
-      </section>
+      {/* Verified Properties Feed (Real Data) */}
+      <VerifiedFeed />
 
       {/* How It Works Section - Crucial for Brokerage Model */}
       <section className="py-12 md:py-20 bg-white">
