@@ -7,7 +7,41 @@ export default function Footer() {
         <footer className="bg-gray-900 text-white pt-20 pb-10 border-t border-gray-800">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
-                    {/* ... skipping unmodified parts ... */}
+                    {/* Brand Column (4 Cols) */}
+                    <div className="lg:col-span-4">
+                        <Link href="/" className="inline-block mb-6 group">
+                            <span className="text-3xl font-black tracking-tight text-white group-hover:text-gray-100 transition">
+                                Ranchi<span className="text-brand-blue">Rent</span>
+                            </span>
+                        </Link>
+                        <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-sm">
+                            We are Ranchi's verified rental marketplace. Bridging the gap between owners and tenants with trust, transparency, and technology.
+                        </p>
+                        <div className="flex gap-4">
+                            <a href="https://www.instagram.com/ranchirent/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
+                                <span className="font-bold">Ig</span>
+                            </a>
+                            <a href="https://www.facebook.com/profile.php?id=61585765550042" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
+                                <span className="font-bold">Fb</span>
+                            </a>
+                            <a href="#" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
+                                <span className="font-bold">Li</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Quick Access (2 Cols) */}
+                    <div className="lg:col-span-2">
+                        <h4 className="font-bold text-white text-lg mb-6">Company</h4>
+                        <ul className="space-y-4 text-sm text-gray-400 font-medium">
+                            <li><Link href="/about" className="hover:text-brand-blue transition hover:pl-1">About Us</Link></li>
+                            <li><Link href="/listings" className="hover:text-brand-blue transition hover:pl-1">All Properties</Link></li>
+                            <li><Link href="/landlord" className="hover:text-brand-blue transition hover:pl-1">List Property</Link></li>
+                            <li><Link href="/contact" className="hover:text-brand-blue transition hover:pl-1">Contact Us</Link></li>
+                            <li><Link href="/privacy" className="hover:text-brand-blue transition hover:pl-1">Privacy Policy</Link></li>
+                            <li><Link href="/terms" className="hover:text-brand-blue transition hover:pl-1">Terms of Service</Link></li>
+                        </ul>
+                    </div>
                     {/* Localities (3 Cols) */}
                     <div className="lg:col-span-3">
                         <h4 className="font-bold text-white text-lg mb-6">Popular Areas</h4>
