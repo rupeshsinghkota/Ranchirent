@@ -1,10 +1,29 @@
-import { properties } from "@/data/properties";
 import { localities } from "@/data/localities";
 import PropertyGrid from "@/components/PropertyGrid";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import LocalitySeoContent from "@/components/LocalitySeoContent";
+
+// Helper to Fetch Data with Cache & Timeout (Reused Pattern)
+async function getProperties() {
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
+
+    try {
+        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 3600 } });
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Timeout")), 2500)
+        );
+
+        const res = await Promise.race([fetchPromise, timeoutPromise]) as Response;
+
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+    } catch (e) {
+        console.error("Locality fetch failed:", e);
+        return [];
+    }
+}
 
 export async function generateStaticParams() {
     return localities.map((loc) => ({
@@ -59,7 +78,48 @@ export default async function LocalityPage(
         notFound();
     }
 
-    const filteredProperties = properties.filter((p) =>
+    // Fetch REAL Data
+    const rawData = await getProperties();
+    const safeData = Array.isArray(rawData) ? rawData : [];
+
+    // Helper to convert Drive URL (Reused Pattern)
+    const getDirectUrl = (url: string | null) => {
+        if (!url) return null;
+        try {
+            if (url.includes("drive.google.com") && url.includes("/d/")) {
+                const idMatches = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (idMatches && idMatches[1]) {
+                    return `https://drive.google.com/thumbnail?id=${idMatches[1]}&sz=w1000`;
+                }
+            }
+            return url;
+        } catch (e) {
+            return url;
+        }
+    };
+
+    const allProperties = safeData.map((item: any) => {
+        const rawImage = item.image ? item.image.split(",")[0] : null;
+        return {
+            id: item.id,
+            title: `${item.type} in ${item.location}`,
+            location: item.location,
+            price: `₹${Number(item.rent).toLocaleString()}`,
+            beds: parseInt(item.type) || 1,
+            baths: 1,
+            type: item.type,
+            furnished: item.furnishing,
+            available: true,
+            image: getDirectUrl(rawImage),
+            description: `Verified ${item.type} available for rent in ${item.location}. Preferred for ${item.tenantPref}.`,
+            amenities: item.amenities ? item.amenities.split(", ") : [],
+            area: "On Request"
+        };
+    }).reverse();
+
+
+    // Filter Real Data
+    const filteredProperties = allProperties.filter((p) =>
         p.location.toLowerCase().includes(localityName.toLowerCase())
     );
 

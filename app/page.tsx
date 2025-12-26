@@ -1,33 +1,14 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Hero from "@/components/Hero";
-import VerifiedFeed from "@/components/VerifiedFeed"; // Import Added
-import PropertyGrid from "@/components/PropertyGrid";
+import HomeProperties from "@/components/HomeProperties";
 import { localities } from "@/data/localities";
 import Link from 'next/link';
 import { ShieldCheck, Wallet, Clock, ArrowRight } from "lucide-react";
 import HomeSeoContent from "@/components/HomeSeoContent";
 
 export default function Home() {
-  const router = useRouter();
-  const [filters, setFilters] = useState({ locality: "", query: "" });
-
-  const handleSearch = () => {
-    const params = new URLSearchParams();
-    if (filters.locality) params.set("locality", filters.locality);
-    if (filters.query) params.set("query", filters.query);
-    router.push(`/listings?${params.toString()}`);
-  };
-
   return (
     <main>
-      <Hero
-        onLocalityChange={(loc) => setFilters(prev => ({ ...prev, locality: loc }))}
-        onQueryChange={(q) => setFilters(prev => ({ ...prev, query: q }))}
-        onSearchClick={handleSearch}
-      />
+      <Hero />
 
       {/* Trust Strip */}
       <div className="bg-gray-50 border-y border-gray-100 py-6">
@@ -40,10 +21,8 @@ export default function Home() {
         </div>
       </div>
 
-
-
-      {/* Verified Properties Feed (Real Data) */}
-      <VerifiedFeed />
+      {/* Verified Properties Feed (Self-Contained Suspense) */}
+      <HomeProperties />
 
       {/* How It Works Section - Crucial for Brokerage Model */}
       <section className="py-12 md:py-20 bg-white">

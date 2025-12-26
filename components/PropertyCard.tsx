@@ -40,7 +40,12 @@ export default function PropertyCard({ property }: PropertyProps) {
 
                 <div className="flex items-center text-gray-500 text-xs mb-4 font-medium">
                     <MapPin className="w-3.5 h-3.5 mr-1 text-gray-400" />
-                    {property.location}
+                    <Link
+                        href={`/rent/${property.location.toLowerCase().replace(/ /g, '-')}`}
+                        className="hover:text-brand-blue hover:underline transition-colors"
+                    >
+                        {property.location}
+                    </Link>
                 </div>
 
                 <div className="flex items-center gap-4 text-xs text-gray-600 mb-4 border-t border-dashed border-gray-100 pt-3">

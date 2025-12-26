@@ -1,136 +1,100 @@
-'use client';
-
-import { useEffect, useState, use } from "react";
 import { notFound } from "next/navigation";
-import { MapPin, Bed, Bath, Ruler, CheckCircle, Phone, Loader2, Camera, ArrowRight } from "lucide-react";
-import Image from "next/image";
+import { MapPin, Bed, Bath, Ruler, CheckCircle, ArrowLeft } from "lucide-react";
 import BookingSection from "@/components/BookingSection";
+import PropertyGallery from "@/components/PropertyGallery";
+import Link from "next/link";
+import VerifiedFeed from "@/components/VerifiedFeed";
 
-// ✅ THE NEW FRESH START URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
-
-interface SheetProperty {
-    id: number;
-    location: string;
-    rent: number;
-    deposit: number;
-    amenities: string;
-    image: string;
-    type: string;
-    furnishing: string;
-    tenantPref: string;
+// Server-side Fetch with Cache (60s)
+async function getProperties() {
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
+    try {
+        const res = await fetch(SCRIPT_URL, { next: { revalidate: 60 } });
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+    } catch (e) {
+        console.error(e);
+        return [];
+    }
 }
 
-export default function PropertyPage(
-    props: {
-        params: Promise<{ id: string }>;
-    }
-) {
-    // Unwrap params using React.use() or await (Next.js 15 pattern, but for client component we need to handle plain promise or hook)
-    // Since we are in 'use client', props.params is a Promise in recent Next.js versions.
-    // For safety in this environment, let's use the `use` hook or simple state if supported, 
-    // but easier is to just unwrap it in useEffect or use `use(props.params)` if React 19/Next 15.
-    // Let's assume standard Next.js behavior where we can use `use` or standard async handling.
-
-    // WORKAROUND: In client components, params might not be a promise in older versions, 
-    // but in newer ones it is. Let's use a standard `useEffect` to unwrap if needed or access directly.
-    // Actually, `use` hook is best.
-    const params = use(props.params);
-
-    const [property, setProperty] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [images, setImages] = useState<string[]>([]);
-
-    useEffect(() => {
-        const fetchProperty = async () => {
-            try {
-                const res = await fetch(SCRIPT_URL);
-                const data = await res.json();
-                console.log("Fetched Data:", data);
-
-                // Find Property by ID
-                const pId = parseInt(params.id);
-                const found = data.find((p: any) => p.id === pId);
-                console.log("Params ID:", params.id, "Parsed:", pId, "Found:", found);
-
-                if (found) {
-                    // Process Images
-                    const rawImages = found.image ? found.image.split(",") : [];
-                    console.log("Raw Images:", rawImages);
-
-                    const processedImages = rawImages.map((url: string) => getDirectUrl(url));
-                    console.log("Processed Images:", processedImages);
-
-                    setProperty({
-                        ...found,
-                        title: `${found.type} in ${found.location}`,
-                        price: `₹${Number(found.rent).toLocaleString()}`,
-                        beds: parseInt(found.type) || 1,
-                        baths: 1, // Default
-                        area: "On Request",
-                        description: `Verified ${found.type} available for rent in ${found.location}. Preferred for ${found.tenantPref}. ${found.furnishing}.`,
-                        amenitiesList: found.amenities ? found.amenities.split(", ") : []
-                    });
-                    setImages(processedImages);
-                }
-                setLoading(false);
-            } catch (error) {
-                console.error("Failed to fetch property:", error);
-                setLoading(false);
+// Helper to convert Drive URL
+const getDirectUrl = (url: string) => {
+    if (!url) return "";
+    try {
+        const firstUrl = url.trim();
+        if (firstUrl.includes("drive.google.com")) {
+            const parts = firstUrl.split(/\/d\/|id=/);
+            if (parts.length > 1) {
+                const id = parts[1].split(/\//)[0].split(/\?/)[0];
+                if (id) return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
             }
-        };
-
-        fetchProperty();
-    }, [params.id]);
-
-    // Helper to convert Drive URL to Direct Image URL
-    const getDirectUrl = (url: string) => {
-        if (!url) return "";
-        try {
-            const firstUrl = url.trim();
-            // Match /d/ID/ or /d/ID or id=ID
-            if (firstUrl.includes("drive.google.com")) {
-                let id = "";
-                const parts = firstUrl.split(/\/d\/|id=/);
-                if (parts.length > 1) {
-                    // Get the part after /d/ or id=
-                    const afterId = parts[1].split(/\//)[0].split(/\?/)[0];
-                    if (afterId) id = afterId;
-                }
-
-                if (id) {
-                    // Use Thumbnail API (Official & Reliable)
-                    // Config 'drive.google.com' must be whitelisted (It is now)
-                    return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
-                }
-            }
-            return firstUrl;
-        } catch (e) {
-            return url;
         }
+        return firstUrl;
+    } catch (e) {
+        return url;
+    }
+};
+
+export default async function PropertyPage({ params }: { params: Promise<{ id: string }> }) {
+    // Unwrap params for Next.js 15+ compatibility
+    const { id } = await params;
+
+    // Fetch All Properties (Server Side)
+    const allProperties = await getProperties();
+
+    // Find Specific Property
+    const rawProperty = allProperties.find((p: any) => p.id == id); // Loose equality for string/number
+
+    if (!rawProperty) {
+        return notFound();
+    }
+
+    // Process Data
+    const rawImages = rawProperty.image ? rawProperty.image.split(",") : [];
+    const images = rawImages.map(getDirectUrl);
+    const amenities = rawProperty.amenities ? rawProperty.amenities.split(", ") : [];
+
+    const property = {
+        ...rawProperty,
+        title: `${rawProperty.type} in ${rawProperty.location}`,
+        price: `₹${Number(rawProperty.rent).toLocaleString()}`,
+        beds: parseInt(rawProperty.type) || 1,
+        baths: 1, // Default from sheet logic
+        area: "On Request",
+        description: `Verified ${rawProperty.type} available for rent in ${rawProperty.location}. Preferred for ${rawProperty.tenantPref}. ${rawProperty.furnishing}.`,
     };
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex flex-col items-center justify-center">
-                <Loader2 className="w-10 h-10 text-brand-blue animate-spin mb-4" />
-                <p className="text-gray-500 font-medium">Loading property details...</p>
-            </div>
-        );
-    }
+    // Filter "Similar" Properties (Same Location or Same Type)
+    const similarProperties = allProperties
+        .filter((p: any) => p.id !== rawProperty.id && (p.location === rawProperty.location || p.type === rawProperty.type))
+        .slice(0, 3)
+        .map((item: any) => ({
+            id: item.id,
+            title: `${item.type} in ${item.location}`,
+            location: item.location,
+            price: `₹${Number(item.rent).toLocaleString()}`,
+            beds: parseInt(item.type) || 1,
+            baths: 1,
+            type: item.type,
+            furnished: item.furnishing,
+            available: true,
+            image: getDirectUrl(item.image ? item.image.split(",")[0] : ""),
+            description: `Verified ${item.type} in ${item.location}`,
+            amenities: item.amenities ? item.amenities.split(", ") : [],
+            area: "On Request"
+        }));
 
-    if (!property) {
-        return (
-            <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">Property Not Found</h1>
-                <p className="text-gray-500">The property you are looking for does not exist or has been removed.</p>
-                <a href="/listings" className="mt-6 px-6 py-2 bg-brand-blue text-white rounded-full font-bold">Back to Listings</a>
-            </div>
-        );
-    }
 
     return (
         <main className="container mx-auto px-4 py-8 lg:py-12">
+            {/* Breadcrumb / Back */}
+            <div className="mb-6">
+                <Link href="/listings" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-brand-blue transition">
+                    <ArrowLeft className="w-4 h-4 mr-1" /> Back to Listings
+                </Link>
+            </div>
+
             <div className="grid lg:grid-cols-3 gap-8 gap-y-12">
                 {/* Main Content (Left Column) */}
                 <div className="lg:col-span-2 space-y-8">
@@ -140,9 +104,11 @@ export default function PropertyPage(
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4">
                             <div>
                                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight mb-2">{property.title}</h1>
-                                <div className="flex items-center text-gray-500 font-medium">
+                                <div className="flex items-center justify-start text-gray-500 font-medium">
                                     <MapPin className="w-5 h-5 mr-2 text-gray-400" />
-                                    {property.location}
+                                    <Link href={`/rent/${property.location.toLowerCase().replace(/ /g, '-')}`} className="hover:text-brand-blue hover:underline transition-colors">
+                                        {property.location}
+                                    </Link>
                                 </div>
                             </div>
                             <div className="text-right hidden sm:block">
@@ -151,37 +117,8 @@ export default function PropertyPage(
                         </div>
                     </div>
 
-                    {/* Gallery Grid (Dynamic) */}
-                    <div className="grid grid-cols-4 grid-rows-2 gap-2 h-64 sm:h-96 rounded-2xl overflow-hidden border border-gray-100">
-                        {/* Main Image */}
-                        <div className="col-span-2 row-span-2 relative bg-gray-100">
-                            {images[0] ? (
-                                <img
-                                    src={images[0]}
-                                    alt={property.title}
-                                    className="w-full h-full object-cover"
-                                />
-                            ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
-                            )}
-                            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold text-gray-800 shadow-sm flex items-center gap-1.5 z-10 border border-gray-100/50">
-                                <CheckCircle className="w-4 h-4 text-brand-blue" /> Verified
-                            </div>
-                        </div>
-
-                        {/* Smaller Images */}
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="col-span-1 row-span-1 relative bg-gray-100">
-                                {images[i] ? (
-                                    <img src={images[i]} alt="Gallery" className="w-full h-full object-cover opacity-90 hover:opacity-100 transition" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-300 text-xs">
-                                        <Camera className="w-4 h-4" />
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
+                    {/* Premium Gallery Component */}
+                    <PropertyGallery images={images} title={property.title} />
 
                     {/* Spec Sheet Strip */}
                     <div className="grid grid-cols-3 gap-4 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
@@ -218,8 +155,8 @@ export default function PropertyPage(
                     <div>
                         <h3 className="text-xl font-bold text-gray-900 mb-4">Amenities</h3>
                         <div className="flex flex-wrap gap-3">
-                            {property.amenitiesList.length > 0 ? property.amenitiesList.map((item: string) => (
-                                <span key={item} className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-700 rounded-full text-sm font-medium border border-gray-100">
+                            {amenities.length > 0 ? amenities.map((item: string) => (
+                                <span key={item} className="inline-flex items-center px-4 py-2 bg-gray-50 text-gray-700 rounded-full text-sm font-medium border border-gray-100 hover:bg-white hover:shadow-sm transition">
                                     <CheckCircle className="w-4 h-4 mr-2 text-brand-blue" />
                                     {item}
                                 </span>
@@ -238,23 +175,14 @@ export default function PropertyPage(
                 </div>
             </div>
 
-            {/* Area Navigation Strip */}
-            <div className="mt-16 pt-12 border-t border-gray-100">
-                <h3 className="text-xl font-bold text-gray-900 mb-6">Explore Other Neighborhoods</h3>
-                <div className="flex flex-wrap gap-3">
-                    {["Lalpur", "Bariatu", "Morabadi", "Kanke Road", "Doranda", "Hinoo", "Kokar", "Argora", "Harmu", "Ratu Road", "Ashok Nagar"].map((loc) => (
-                        <a
-                            key={loc}
-                            href={`/rent/${loc.toLowerCase().replace(/ /g, '-')}`}
-                            className="px-4 py-2 bg-gray-50 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-100 hover:text-brand-blue transition-all"
-                        >
-                            {loc}
-                        </a>
-                    ))}
+            {/* Similar Properties Section */}
+            {similarProperties.length > 0 && (
+                <div className="mt-24 pt-12 border-t border-gray-100">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-8">Similar Properties You Might Like</h2>
+                    {/* Reuse VerifiedFeed but passed filtered list */}
+                    <VerifiedFeed initialProperties={similarProperties} />
                 </div>
-            </div>
-
-            {/* Add fixed bottom bar for mobile booking if needed later */}
+            )}
         </main>
     );
 }

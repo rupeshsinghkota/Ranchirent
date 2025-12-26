@@ -1,16 +1,22 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, ShieldCheck, Zap, MapPin } from "lucide-react";
 import { localities } from "@/data/localities";
 import Image from "next/image";
 
-interface HeroProps {
-    onLocalityChange: (locality: string) => void;
-    onQueryChange: (query: string) => void;
-    onSearchClick?: () => void;
-}
+export default function Hero() {
+    const router = useRouter();
+    const [filters, setFilters] = useState({ locality: "", query: "" });
 
-export default function Hero({ onLocalityChange, onQueryChange, onSearchClick }: HeroProps) {
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+        if (filters.locality) params.set("locality", filters.locality);
+        if (filters.query) params.set("query", filters.query);
+        router.push(`/listings?${params.toString()}`);
+    };
+
     return (
         <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
             {/* Background Image */}
@@ -50,7 +56,7 @@ export default function Hero({ onLocalityChange, onQueryChange, onSearchClick }:
                                 <MapPin className="h-5 w-5 text-blue-300" />
                             </div>
                             <select
-                                onChange={(e) => onLocalityChange(e.target.value)}
+                                onChange={(e) => setFilters(prev => ({ ...prev, locality: e.target.value }))}
                                 className="block w-full rounded-xl border-0 py-4 pl-12 pr-10 text-white bg-transparent ring-0 placeholder:text-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-base font-medium cursor-pointer appearance-none [&>option]:text-black"
                             >
                                 <option value="" className="text-gray-500">All Locations</option>
@@ -63,14 +69,14 @@ export default function Hero({ onLocalityChange, onQueryChange, onSearchClick }:
                         <div className="relative flex-grow">
                             <input
                                 type="text"
-                                onChange={(e) => onQueryChange(e.target.value)}
+                                onChange={(e) => setFilters(prev => ({ ...prev, query: e.target.value }))}
                                 className="block w-full rounded-xl border-0 py-4 px-6 text-white bg-transparent ring-0 placeholder:text-gray-300 focus:ring-2 focus:ring-blue-500 sm:text-base transition"
                                 placeholder="Search by Project..."
                             />
                         </div>
 
                         <button
-                            onClick={onSearchClick}
+                            onClick={handleSearch}
                             className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-8 py-4 text-base font-bold text-white shadow-lg hover:bg-blue-500 hover:scale-105 transition-all duration-200 shrink-0"
                         >
                             <Search className="h-5 w-5" />

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import FilterBar from "@/components/FilterBar";
 import PropertyGrid from "@/components/PropertyGrid";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -13,15 +14,19 @@ import { Loader2 } from "lucide-react";
 // The new deployment URL
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
 
-function SearchContent() {
+interface SearchContentProps {
+    initialProperties?: Property[];
+}
+
+function SearchContent({ initialProperties = [] }: SearchContentProps) {
     const searchParams = useSearchParams();
     const [filters, setFilters] = useState({
         locality: searchParams.get("locality") || "",
         query: searchParams.get("query") || ""
     });
 
-    const [properties, setProperties] = useState<Property[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [properties, setProperties] = useState<Property[]>(initialProperties);
+    const [loading, setLoading] = useState(initialProperties.length === 0);
 
     // Update filters if URL params change
     useEffect(() => {
@@ -31,8 +36,10 @@ function SearchContent() {
         });
     }, [searchParams]);
 
-    // Fetch Properties from Google Sheet
+    // Fetch Properties if not provided (Client-Side Fallback)
     useEffect(() => {
+        if (initialProperties.length > 0) return;
+
         const fetchProperties = async () => {
             try {
                 const res = await fetch(SCRIPT_URL);
@@ -85,11 +92,11 @@ function SearchContent() {
         };
 
         fetchProperties();
-    }, []);
+    }, [initialProperties]);
 
     const filteredProperties = properties.filter((property) => {
         // Filter by Locality
-        if (filters.locality && !property.location.includes(filters.locality)) {
+        if (filters.locality && !property.location.toLowerCase().includes(filters.locality.toLowerCase())) {
             return false;
         }
 
@@ -183,7 +190,7 @@ function SearchContent() {
                     <h3 className="text-xl font-bold text-gray-900 mb-6">Explore Other Neighborhoods</h3>
                     <div className="flex flex-wrap gap-3">
                         {["Lalpur", "Bariatu", "Morabadi", "Kanke Road", "Doranda", "Hinoo", "Kokar", "Argora", "Harmu", "Ratu Road", "Ashok Nagar"].map((loc) => (
-                            <a
+                            <Link
                                 key={loc}
                                 href={`/rent/${loc.toLowerCase().replace(/ /g, '-')}`}
                                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${filters.locality === loc
@@ -192,7 +199,7 @@ function SearchContent() {
                                     }`}
                             >
                                 {loc}
-                            </a>
+                            </Link>
                         ))}
                     </div>
                 </div>
@@ -201,10 +208,10 @@ function SearchContent() {
     );
 }
 
-export default function SearchContainer() {
+export default function SearchContainer({ initialProperties }: SearchContentProps) {
     return (
         <Suspense fallback={<div>Loading search...</div>}>
-            <SearchContent />
+            <SearchContent initialProperties={initialProperties} />
         </Suspense>
     );
 }

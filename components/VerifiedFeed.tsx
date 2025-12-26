@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Bed, Bath, ArrowRight, Camera } from "lucide-react";
 
 // The same Script URL
@@ -19,11 +20,17 @@ interface SheetProperty {
     tenantPref: string;
 }
 
-export default function VerifiedFeed() {
-    const [properties, setProperties] = useState<SheetProperty[]>([]);
-    const [loading, setLoading] = useState(true);
+interface VerifiedFeedProps {
+    initialProperties?: SheetProperty[];
+}
+
+export default function VerifiedFeed({ initialProperties = [] }: VerifiedFeedProps) {
+    const [properties, setProperties] = useState<SheetProperty[]>(initialProperties);
+    const [loading, setLoading] = useState(initialProperties.length === 0);
 
     useEffect(() => {
+        if (initialProperties.length > 0) return;
+
         fetch(SCRIPT_URL)
             .then(res => res.json())
             .then(data => {
@@ -34,7 +41,7 @@ export default function VerifiedFeed() {
                 console.error("Failed to load properties", err);
                 setLoading(false);
             });
-    }, []);
+    }, [initialProperties]);
 
     // Helper to convert Drive URL to Direct Image URL
     const getDirectUrl = (url: string) => {
@@ -83,10 +90,12 @@ export default function VerifiedFeed() {
                             {/* Image Container */}
                             <div className="relative h-72 overflow-hidden">
                                 {imageUrl ? (
-                                    <img
+                                    <Image
                                         src={imageUrl}
                                         alt="Property"
-                                        className="w-full h-full object-cover group-hover:scale-110 transition duration-700 ease-in-out"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        className="object-cover group-hover:scale-110 transition duration-700 ease-in-out"
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-400 text-xs font-medium">No Image Available</div>
