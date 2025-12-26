@@ -1,5 +1,6 @@
 "use client";
 
+import { localities } from "@/data/localities";
 import { useState } from "react";
 import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle } from "lucide-react";
 
@@ -17,7 +18,8 @@ export default function LandlordForm() {
         name: "",
         phone: "",
         type: "2 BHK",
-        location: "",
+        locality: "",
+        address: "", // Changed from location to separate concepts
         rent: ""
     });
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -30,11 +32,14 @@ export default function LandlordForm() {
         e.preventDefault();
         setStatus("loading");
 
+        // Combine Locality + Address
+        const finalLocation = `${formData.locality}, ${formData.address}`;
+
         const dataToSend = {
             Type: "Landlord",
             Name: formData.name,
             Phone: formData.phone,
-            Location: formData.location,
+            Location: finalLocation, // Sending combined address
             Details: `${formData.type} - Rent: ₹${formData.rent}`,
             Status: "New"
         };
@@ -56,7 +61,7 @@ export default function LandlordForm() {
                 window.fbq('track', 'Lead');
             }
 
-            setFormData({ name: "", phone: "", type: "2 BHK", location: "", rent: "" }); // Reset form
+            setFormData({ name: "", phone: "", type: "2 BHK", locality: "", address: "", rent: "" }); // Reset form
         } catch (error) {
             console.error("Error submitting form", error);
             setStatus("error");
@@ -173,20 +178,42 @@ export default function LandlordForm() {
                     </div>
                 </div>
 
-                {/* Location */}
-                <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Locality / Address</label>
-                    <div className="relative">
-                        <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                        <input
-                            type="text"
-                            name="location"
-                            required
-                            value={formData.location}
-                            onChange={handleChange}
-                            placeholder="e.g. Lalpur, near Nucleus Mall"
-                            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900"
-                        />
+                {/* Location + Address */}
+                <div className="grid md:grid-cols-2 gap-5">
+                    {/* Locality Dropdown */}
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Locality</label>
+                        <div className="relative">
+                            <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                            <select
+                                name="locality"
+                                required
+                                value={formData.locality}
+                                onChange={handleChange}
+                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900 appearance-none cursor-pointer"
+                            >
+                                <option value="">Select Locality</option>
+                                {localities.map(loc => (
+                                    <option key={loc} value={loc}>{loc}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Full Address */}
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Address / Landmark</label>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                name="address"
+                                required
+                                value={formData.address}
+                                onChange={handleChange}
+                                placeholder="e.g. Near Nucleus Mall"
+                                className="w-full pl-4 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900"
+                            />
+                        </div>
                     </div>
                 </div>
 
