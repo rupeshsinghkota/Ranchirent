@@ -7,7 +7,7 @@ async function getProperties() {
 
     try {
         // 1 Hour Cache - Static Speed
-        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 3600 } });
+        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 120 } });
 
         // 2s Safety Timeout
         const timeoutPromise = new Promise((_, reject) =>

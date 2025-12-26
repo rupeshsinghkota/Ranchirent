@@ -8,7 +8,7 @@ async function getProperties() {
         // Aggressive Caching: Revalidate every 1 hour (3600 seconds)
         // This ensures users almost ALWAYS hit the fast Next.js cache
         // instead of waiting for Google Script.
-        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 3600 } });
+        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 120 } });
 
         // 2.5s Timeout - slightly more generous since we rely on cache mostly
         const timeoutPromise = new Promise((_, reject) =>

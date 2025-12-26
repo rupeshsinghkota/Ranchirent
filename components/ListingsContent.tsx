@@ -6,7 +6,7 @@ async function getProperties() {
 
     try {
         // Aggressive Caching: Revalidate every 1 hour (3600 seconds)
-        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 3600 } });
+        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 120 } });
 
         // 2.5s Timeout
         const timeoutPromise = new Promise((_, reject) =>

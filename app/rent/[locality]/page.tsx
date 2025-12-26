@@ -10,7 +10,7 @@ async function getProperties() {
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
 
     try {
-        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 3600 } });
+        const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 120 } });
         const timeoutPromise = new Promise((_, reject) =>
             setTimeout(() => reject(new Error("Timeout")), 2500)
         );
