@@ -9,6 +9,17 @@ export default function PropertyGallery({ images, title }: { images: string[], t
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    // Helper to validate and get safe image URL
+    const getValidImageUrl = (url: string | undefined | null) => {
+        if (!url || url === "No Image") return "/property-placeholder.png";
+        try {
+            new URL(url);
+            return url;
+        } catch {
+            return "/property-placeholder.png";
+        }
+    };
+
     const openLightbox = (index: number) => {
         setCurrentIndex(index);
         setIsOpen(true);
@@ -43,7 +54,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
                     onClick={() => openLightbox(0)}
                 >
                     <Image
-                        src={images[0]}
+                        src={getValidImageUrl(images[0])}
                         alt={`${title} - Main`}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
@@ -61,7 +72,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
                             onClick={() => openLightbox(i)}
                         >
                             <Image
-                                src={images[i]}
+                                src={getValidImageUrl(images[i])}
                                 alt={`${title} - View ${i}`}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 25vw"
@@ -80,7 +91,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
             {/* Mobile Carousel (Immersive Hero) */}
             <div className="sm:hidden -mx-4 sm:mx-0 h-[45vh] relative overflow-hidden shadow-sm">
                 <Image
-                    src={images[0]}
+                    src={getValidImageUrl(images[0])}
                     alt={title}
                     fill
                     sizes="100vw"
@@ -122,7 +133,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
 
                     <div className="relative w-full max-w-5xl h-[70vh] md:h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                         <Image
-                            src={images[currentIndex]}
+                            src={getValidImageUrl(images[currentIndex])}
                             alt={`Gallery ${currentIndex + 1}`}
                             fill
                             sizes="100vw"
