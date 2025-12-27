@@ -4,9 +4,9 @@ import { localities } from "@/data/localities";
 
 export default function Footer() {
     return (
-        <footer className="bg-gray-900 text-white pt-20 pb-10 border-t border-gray-800">
+        <footer className="bg-gray-900 text-white pt-12 md:pt-20 pb-24 md:pb-10 border-t border-gray-800">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-12 mb-12 md:mb-16">
                     {/* Brand Column (4 Cols) */}
                     <div className="lg:col-span-4">
                         <Link href="/" className="inline-block mb-6 group">
@@ -42,16 +42,19 @@ export default function Footer() {
                     </div>
                     {/* Localities (3 Cols) */}
                     <div className="lg:col-span-3">
-                        <h4 className="font-bold text-white text-lg mb-6">Popular Areas</h4>
-                        <ul className="space-y-4 text-sm text-gray-400 font-medium columns-1 sm:columns-2 gap-x-4">
-                            {localities.slice(0, 12).map((loc) => (
-                                <li key={loc} className="pb-4 sm:pb-0 break-inside-avoid">
-                                    <Link href={`/rent/${loc.toLowerCase().replace(/ /g, '-')}`} className="hover:text-brand-blue transition">
+                        <h4 className="font-bold text-white text-lg mb-4 md:mb-6">Popular Areas</h4>
+                        <ul className="grid grid-cols-2 gap-2 text-sm text-gray-400 font-medium">
+                            {localities.slice(0, 10).map((loc) => (
+                                <li key={loc}>
+                                    <Link href={`/rent/${loc.toLowerCase().replace(/ /g, '-')}`} className="hover:text-brand-blue transition block py-1">
                                         {loc}
                                     </Link>
                                 </li>
                             ))}
                         </ul>
+                        <Link href="/listings" className="inline-block mt-4 text-xs font-bold text-brand-blue hover:text-white transition uppercase tracking-wider">
+                            View All Locations →
+                        </Link>
                     </div>
 
                     {/* Contact & Newsletter (3 Cols) */}
@@ -86,7 +89,7 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500 font-medium">
+                <div className="border-t border-gray-800 pt-8 flex flex-col items-center md:items-start md:flex-row justify-between text-sm text-gray-500 font-medium text-center md:text-left">
                     <p>© {new Date().getFullYear()} RanchiRent.in. All rights reserved.</p>
                     <div className="flex gap-6 mt-4 md:mt-0">
                         <span className="flex items-center gap-1.5">
