@@ -11,10 +11,8 @@ export default function AdminManagePage() {
     const [properties, setProperties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [showDebug, setShowDebug] = useState(false);
 
     useEffect(() => {
-        // ... (fetch logic remains same)
         fetch(SCRIPT_URL)
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch data");
@@ -35,7 +33,7 @@ export default function AdminManagePage() {
             });
     }, []);
 
-    // ... (getThumbnail remains same)
+    // Helper to get image
     const getThumbnail = (url: string) => {
         if (!url) return "";
         if (url.includes("drive.google.com") && url.includes("/d/")) {
@@ -46,7 +44,6 @@ export default function AdminManagePage() {
     };
 
     if (error) {
-        // ... (error state remains same)
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-red-100 max-w-md w-full text-center">
@@ -72,29 +69,9 @@ export default function AdminManagePage() {
     return (
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="container mx-auto px-4">
-                <div className="flex justify-between items-end mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Manage Listings</h1>
-                        <button
-                            onClick={() => setShowDebug(!showDebug)}
-                            className="text-xs text-gray-400 underline mt-2 hover:text-gray-600"
-                        >
-                            {showDebug ? "Hide Debug Data" : "Debug: Missing Data?"}
-                        </button>
-                    </div>
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900">Manage Listings</h1>
                 </div>
-
-                {showDebug && properties.length > 0 && (
-                    <div className="mb-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <h4 className="font-bold text-yellow-800 text-xs uppercase mb-2">Raw Data from Google Script (First Item)</h4>
-                        <pre className="text-[10px] font-mono whitespace-pre-wrap text-gray-800">
-                            {JSON.stringify(properties[0], null, 2)}
-                        </pre>
-                        <p className="text-xs text-yellow-700 mt-2">
-                            * If "owner" or "phone" fields are missing here, your Google Script is not returning them.
-                        </p>
-                    </div>
-                )}
 
                 {loading ? (
                     <div className="flex justify-center py-20">
