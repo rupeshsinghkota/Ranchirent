@@ -138,7 +138,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
                     </div>
 
                     {/* Premium Gallery Component */}
-                    <div className="order-1 sm:order-2 relative z-0">
+                    <div className="order-1 sm:order-2 relative z-auto">
                         <PropertyGallery images={images} title={property.title} />
                     </div>
 
