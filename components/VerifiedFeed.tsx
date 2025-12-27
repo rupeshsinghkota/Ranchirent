@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ArrowRight, Camera } from "lucide-react";
+import PropertyCard from "@/components/PropertyCard";
+import { Property } from "@/data/properties";
 
 // The same Script URL
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
@@ -34,7 +36,7 @@ export default function VerifiedFeed({ initialProperties = [] }: VerifiedFeedPro
         fetch(SCRIPT_URL)
             .then(res => res.json())
             .then(data => {
-                setProperties(data.slice(0, 6)); // Show latest 6
+                setProperties(data.slice(0, 8)); // Show latest 8
                 setLoading(false);
             })
             .catch(err => {
@@ -76,89 +78,27 @@ export default function VerifiedFeed({ initialProperties = [] }: VerifiedFeedPro
                 </div>
             </div>
 
-            <div className="flex flex-col gap-4 md:grid md:grid-cols-3 md:gap-6">
+            <div className="flex flex-col gap-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {properties.map((p) => {
-                    const imageUrl = getDirectUrl(p.image);
-                    const imageCount = p.image.split(",").length;
+                    // Adapt SheetProperty to Property interface
+                    const adaptedProperty: Property = {
+                        id: p.id,
+                        title: `${p.type} in ${p.location}`,
+                        location: p.location,
+                        price: `₹ ${p.rent.toLocaleString()}`,
+                        type: p.type,
+                        image: getDirectUrl(p.image),
+                        beds: parseInt(p.type.split(" ")[0]) || 2, // Extract "2" from "2 BHK"
+                        baths: 1, // Default as sheet doesn't have this yet
+                        area: "N/A",
+                        available: true,
+                        furnished: p.furnishing || "Unfurnished",
+                        description: "Verified Property",
+                        amenities: p.amenities ? p.amenities.split(",") : []
+                    };
 
                     return (
-                        <Link
-                            href={`/property/${p.id}`}
-                            key={p.id}
-                            className="group relative bg-white border border-gray-100 rounded-xl md:rounded-3xl overflow-hidden hover:shadow-[0_20px_40px_-5px_rgba(0,0,0,0.1)] transition-all duration-300 hover:-translate-y-1 block md:h-full flex flex-row md:flex-col items-stretch h-28 md:h-auto"
-                        >
-                            {/* Image Container */}
-                            <div className="relative w-[32%] md:w-full md:h-72 flex-shrink-0 bg-gray-100">
-                                {imageUrl ? (
-                                    <Image
-                                        src={imageUrl}
-                                        alt="Property"
-                                        fill
-                                        sizes="(max-width: 768px) 35vw, (max-width: 1200px) 50vw, 33vw"
-                                        className="object-cover group-hover:scale-110 transition duration-700 ease-in-out"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-400 text-xs font-medium">No Image</div>
-                                )}
-
-                                {/* Overlay (Desktop Only) */}
-                                <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-
-                                {/* Badges (Desktop Only) */}
-                                <div className="hidden md:flex absolute top-4 left-4 gap-2">
-                                    <span className="bg-white/90 backdrop-blur-md text-green-700 text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
-                                        Verified
-                                    </span>
-                                </div>
-
-                                {/* Price (Desktop Overlay) */}
-                                <div className="hidden md:block absolute bottom-5 left-5 text-white">
-                                    <p className="text-2xl font-bold tracking-tight">₹ {p.rent.toLocaleString()}<span className="text-sm font-normal opacity-90">/mo</span></p>
-                                </div>
-                            </div>
-
-                            {/* Content */}
-                            <div className="p-2 md:p-6 flex flex-col flex-grow relative bg-white justify-between">
-
-                                {/* Mobile Header */}
-                                <div className="block md:hidden mb-0.5">
-                                    <div className="flex justify-between items-center mb-0.5">
-                                        <span className="text-[9px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-md uppercase tracking-wider">Verified</span>
-                                        {imageCount > 1 && <span className="text-[9px] text-gray-400 flex items-center gap-0.5"><Camera className="w-3 h-3" /> +{imageCount - 1}</span>}
-                                    </div>
-                                    <h3 className="text-base font-bold text-gray-900 leading-tight">₹ {p.rent.toLocaleString()}</h3>
-                                </div>
-
-                                <div className="md:mb-4 md:flex-grow">
-                                    <div className="flex items-start justify-between mb-0.5 md:mb-2 text-gray-500 font-medium text-[10px] md:text-sm">
-                                        <div className="flex items-center gap-1 md:gap-1.5">
-                                            <MapPin className="w-3 h-3 md:w-4 md:h-4 text-brand-blue shrink-0" />
-                                            <span className="truncate max-w-[120px] md:max-w-[200px]">{p.location}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-1.5 md:gap-2 mt-1 md:mt-4">
-                                        <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 md:px-3 md:py-1.5 rounded-md md:rounded-lg text-[10px] md:text-xs font-bold uppercase tracking-wide border border-blue-100">
-                                            {p.type || "Flat"}
-                                        </span>
-                                        <span className="inline-flex items-center bg-gray-50 text-gray-600 px-2 py-1 md:px-3 md:py-1.5 rounded-md md:rounded-lg text-[10px] md:text-xs font-bold uppercase tracking-wide border border-gray-100">
-                                            {p.furnishing || "Unfurnished"}
-                                        </span>
-                                    </div>
-
-                                    <p className="hidden md:block mt-4 text-xs text-gray-400 font-medium line-clamp-2 leading-relaxed">
-                                        {p.amenities}
-                                    </p>
-                                </div>
-
-                                <div className="hidden md:flex pt-5 border-t border-gray-100 mt-auto items-center justify-between">
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Details</span>
-                                    <div className="bg-brand-blue text-white w-8 h-8 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:shadow-lg group-hover:bg-blue-600 transition-all duration-300">
-                                        <ArrowRight className="w-4 h-4" />
-                                    </div>
-                                </div>
-                            </div>
-                        </Link>
+                        <PropertyCard key={p.id} property={adaptedProperty} />
                     );
                 })}
             </div>
