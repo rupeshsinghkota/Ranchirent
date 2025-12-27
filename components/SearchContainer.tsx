@@ -8,6 +8,7 @@ import PropertyGrid from "@/components/PropertyGrid";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import LocalitySeoContent from "@/components/LocalitySeoContent";
 import { Property } from "@/data/properties"; // Keep interface, remove static data usage
+import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
 import { Loader2 } from "lucide-react";
 
 // ✅ THE NEW FRESH START URL
@@ -96,6 +97,10 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
         fetchProperties();
     }, [initialProperties]);
 
+    const [sortBy, setSortBy] = useState("Newest First");
+
+    // ... (keep existing effects)
+
     const filteredProperties = properties.filter((property) => {
         // Filter by Locality
         if (filters.locality && !property.location.toLowerCase().includes(filters.locality.toLowerCase())) {
@@ -114,6 +119,24 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
         }
 
         return true;
+    }).sort((a, b) => {
+        if (sortBy === "Price: Low to High") {
+            const priceA = parseInt(a.price.replace(/[^\d]/g, "")) || 0;
+            const priceB = parseInt(b.price.replace(/[^\d]/g, "")) || 0;
+            return priceA - priceB;
+        }
+        if (sortBy === "Price: High to Low") {
+            const priceA = parseInt(a.price.replace(/[^\d]/g, "")) || 0;
+            const priceB = parseInt(b.price.replace(/[^\d]/g, "")) || 0;
+            return priceB - priceA;
+        }
+        // Default: Newest First (Assuming array is initially fetched newest first, we keep it index order or if there were a date field)
+        // Since api returns reverse() order initially, and we trust that order for "Newest", we don't need to re-sort if it's default, 
+        // BUT if user switches back to Newest, we need to respect original order. 
+        // Ideally we would have an ID or Date. Assuming ID is roughly chronological or original index.
+        // For now, let's assume the order in 'properties' is Newest First.
+        // We will just return 0 to preserve filtered order, which preserves original order.
+        return 0;
     });
 
     const breadcrumbItems = [
@@ -164,7 +187,11 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
                         {/* Sort Dropdown */}
                         <div className="flex items-center gap-3 bg-gray-50 p-1 rounded-lg border border-gray-200">
                             <span className="text-xs font-bold text-gray-500 uppercase px-2">Sort</span>
-                            <select className="text-sm font-semibold text-gray-900 bg-transparent border-none focus:ring-0 cursor-pointer">
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="text-sm font-semibold text-gray-900 bg-transparent border-none focus:ring-0 cursor-pointer"
+                            >
                                 <option>Newest First</option>
                                 <option>Price: Low to High</option>
                                 <option>Price: High to Low</option>
@@ -174,9 +201,10 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
                 </div>
 
                 {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20">
-                        <Loader2 className="w-10 h-10 text-brand-blue animate-spin mb-4" />
-                        <p className="text-gray-500 font-medium">Fetching verified properties...</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <PropertyCardSkeleton key={i} />
+                        ))}
                     </div>
                 ) : (
                     <PropertyGrid properties={filteredProperties} />
