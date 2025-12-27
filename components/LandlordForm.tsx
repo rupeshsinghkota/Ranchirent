@@ -2,68 +2,118 @@
 
 import { localities } from "@/data/localities";
 import { useState } from "react";
-import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle } from "lucide-react";
+import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Check } from "lucide-react";
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhU5xYa1CVrQWJ49VBEsXhSuk_fcUD6Mo1hzm4IgTnaAiTvuYi1xkOx0plDtS9SEGO/exec";
-
-// Extend Window interface for Facebook Pixel
-declare global {
-    interface Window {
-        fbq: any;
-    }
-}
+// The MAIN Property Database Script (Same as Admin)
+const PROPERTY_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
 
 export default function LandlordForm() {
-    const [formData, setFormData] = useState({
-        name: "",
-        phone: "",
-        type: "2 BHK",
-        locality: "",
-        address: "", // Changed from location to separate concepts
-        rent: ""
-    });
-    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+    const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+    const [files, setFiles] = useState<File[]>([]);
+    const [previews, setPreviews] = useState<string[]>([]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const [formData, setFormData] = useState({
+        owner: "",
+        phone: "",
+        address: "",
+        location: "",
+        rent: "",
+        deposit: "",
+        type: "",
+        furnishing: "",
+        tenantPref: [] as string[],
+        amenities: [] as string[]
+    });
+
+    // Helper: Toggle Arrays
+    const toggleSelection = (field: "tenantPref" | "amenities", item: string) => {
+        setFormData(prev => {
+            const list = prev[field];
+            if (list.includes(item)) return { ...prev, [field]: list.filter(i => i !== item) };
+            return { ...prev, [field]: [...list, item] };
+        });
     };
 
+    // File Handling
+    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const newFiles = Array.from(e.target.files);
+            if (files.length + newFiles.length > 5) {
+                alert("Maximum 5 images allowed");
+                return;
+            }
+            const validFiles = newFiles.filter(f => f.size < 4 * 1024 * 1024); // 4MB limit
+            setFiles(prev => [...prev, ...validFiles]);
+            setPreviews(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
+        }
+    };
+
+    const removeFile = (index: number) => {
+        setFiles(prev => prev.filter((_, i) => i !== index));
+        setPreviews(prev => prev.filter((_, i) => i !== index));
+    };
+
+    // ImgBB Upload
+    const uploadToImgBB = async (file: File) => {
+        const formData = new FormData();
+        formData.append("image", file);
+        const res = await fetch("https://api.imgbb.com/1/upload?key=639af8c66e1d22558be5338e60d150f5", {
+            method: "POST",
+            body: formData
+        });
+        const data = await res.json();
+        if (data.success) return data.data.url;
+        throw new Error("Image Upload Failed");
+    };
+
+    // Submit Handler
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setStatus("loading");
-
-        // Combine Locality + Address
-        const finalLocation = `${formData.locality}, ${formData.address}`;
-
-        const dataToSend = {
-            Type: "Landlord",
-            Name: formData.name,
-            Phone: formData.phone,
-            Location: finalLocation, // Sending combined address
-            Details: `${formData.type} - Rent: ₹${formData.rent}`,
-            Status: "New"
-        };
+        setStatus("submitting");
 
         try {
-            await fetch(GOOGLE_SCRIPT_URL, {
+            // 1. Upload Images
+            const imageUrls = await Promise.all(files.map(uploadToImgBB));
+
+            // 2. Prepare Payload for Main Database
+            const payload = {
+                owner: formData.owner,
+                phone: formData.phone,
+                address: formData.address,
+                location: formData.location,
+                rent: formData.rent,
+                deposit: formData.deposit,
+                type: formData.type,
+                furnishing: formData.furnishing,
+                tenantPref: formData.tenantPref.join(", "),
+                amenities: formData.amenities.join(", "),
+                images: imageUrls, // Array of URLs
+                // Status defaults to whatever the sheet script sets (usually new row)
+            };
+
+            // 3. Submit
+            await fetch(PROPERTY_SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(dataToSend),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
             });
 
             setStatus("success");
+            setFormData({
+                owner: "", phone: "", address: "", location: "", rent: "", deposit: "",
+                type: "", furnishing: "", tenantPref: [], amenities: []
+            });
+            setFiles([]);
+            setPreviews([]);
 
-            // Track Lead in Facebook Pixel
-            if (typeof window !== 'undefined' && window.fbq) {
-                window.fbq('track', 'Lead');
+            // Track Pixel
+            if (typeof window !== 'undefined' && (window as any).fbq) {
+                (window as any).fbq('track', 'ListingSubmitted');
             }
 
-            setFormData({ name: "", phone: "", type: "2 BHK", locality: "", address: "", rent: "" }); // Reset form
         } catch (error) {
-            console.error("Error submitting form", error);
+            console.error(error);
             setStatus("error");
         }
     };
@@ -74,170 +124,175 @@ export default function LandlordForm() {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle className="w-8 h-8 text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Listing Submitted!</h3>
-                <p className="text-gray-500 mb-6">We will call you shortly to verify the details and schedule a photoshoot.</p>
-                <div className="space-y-3">
-                    <button
-                        onClick={() => window.open("https://wa.me/917557777987", "_blank")}
-                        className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
-                    >
-                        Chat on WhatsApp
-                    </button>
-                    <button
-                        onClick={() => setStatus("idle")}
-                        className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3.5 rounded-xl transition-all"
-                    >
-                        Submit Another Property
-                    </button>
-                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Property Listed!</h3>
+                <p className="text-gray-500 mb-6">Your property has been submitted to our system. It will be live after a quick verification call.</p>
+                <button
+                    onClick={() => setStatus("idle")}
+                    className="w-full bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-xl transition-all"
+                >
+                    List Another Property
+                </button>
             </div>
         );
     }
 
     return (
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <div className="bg-blue-600 p-6 text-white text-center">
-                <h3 className="text-xl font-bold">List Your Property Now</h3>
-                <p className="text-blue-100 text-sm mt-1">Get verified tenants quickly.</p>
+            <div className="bg-gray-900 p-6 text-white text-center">
+                <h3 className="text-xl font-bold">List Your Property</h3>
+                <p className="text-gray-400 text-sm mt-1">Free Listing. Verified Tenants.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-5">
-                <div className="grid md:grid-cols-2 gap-5">
-                    {/* Name */}
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Owner Name</label>
-                        <div className="relative">
-                            <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                            <input
-                                type="text"
-                                name="name"
-                                required
-                                value={formData.name}
-                                onChange={handleChange}
-                                placeholder="Your Name"
-                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900"
-                            />
-                        </div>
-                    </div>
+            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
 
-                    {/* Phone */}
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
-                        <div className="relative">
-                            <Phone className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                            <input
-                                type="tel"
-                                name="phone"
-                                required
-                                value={formData.phone}
-                                onChange={handleChange}
-                                placeholder="Mobile Number"
-                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900"
-                            />
+                {/* 1. Owner Details */}
+                <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Owner Details</h4>
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Name</label>
+                            <div className="relative">
+                                <User className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                <input required type="text" placeholder="Your Name" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
+                                    value={formData.owner} onChange={e => setFormData({ ...formData, owner: e.target.value })} />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Phone</label>
+                            <div className="relative">
+                                <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                <input required type="tel" placeholder="Mobile Number" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
+                                    value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-5">
-                    {/* Property Type */}
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Property Type</label>
-                        <div className="relative">
-                            <Building2 className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                            <select
-                                name="type"
-                                value={formData.type}
-                                onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900 appearance-none cursor-pointer"
-                            >
-                                <option value="1 RK">1 RK / Studio</option>
-                                <option value="1 BHK">1 BHK</option>
-                                <option value="2 BHK">2 BHK</option>
-                                <option value="3 BHK">3 BHK</option>
-                                <option value="4+ BHK">4+ BHK / Villa</option>
-                                <option value="Independent House">Independent House</option>
+                {/* 2. Property Location */}
+                <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Location</h4>
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Locality</label>
+                            <div className="relative">
+                                <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                <select required className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none appearance-none"
+                                    value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })}>
+                                    <option value="">Select Locality</option>
+                                    {localities.map(loc => <option key={loc} value={loc}>{loc}</option>)}
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Address / Landmark</label>
+                            <input required type="text" placeholder="e.g. Near Nucleus Mall" className="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
+                                value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
+                        </div>
+                    </div>
+                </div>
+
+                {/* 3. Property Specs */}
+                <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Details</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Type</label>
+                            <select required className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
+                                value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
+                                <option value="">Select Type</option>
+                                {["1 RK", "1 BHK", "2 BHK", "3 BHK", "Independent House"].map(t => <option key={t} value={t}>{t}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Furnishing</label>
+                            <select required className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
+                                value={formData.furnishing} onChange={e => setFormData({ ...formData, furnishing: e.target.value })}>
+                                <option value="">Select</option>
+                                {["Unfurnished", "Semi-Furnished", "Full Furnished"].map(f => <option key={f} value={f}>{f}</option>)}
                             </select>
                         </div>
                     </div>
-
-                    {/* Expected Rent */}
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Expected Rent (₹/mo)</label>
+                    <div className="grid grid-cols-2 gap-4">
                         <div className="relative">
-                            <IndianRupee className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                            <input
-                                type="number"
-                                name="rent"
-                                required
-                                value={formData.rent}
-                                onChange={handleChange}
-                                placeholder="e.g. 15000"
-                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900"
-                            />
+                            <IndianRupee className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                            <input required type="number" placeholder="Rent (₹)" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
+                                value={formData.rent} onChange={e => setFormData({ ...formData, rent: e.target.value })} />
+                        </div>
+                        <div className="relative">
+                            <IndianRupee className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                            <input type="number" placeholder="Deposit (₹)" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
+                                value={formData.deposit} onChange={e => setFormData({ ...formData, deposit: e.target.value })} />
                         </div>
                     </div>
                 </div>
 
-                {/* Location + Address */}
-                <div className="grid md:grid-cols-2 gap-5">
-                    {/* Locality Dropdown */}
+                {/* 4. Preferences */}
+                <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Preferences & Amenities</h4>
+
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Locality</label>
-                        <div className="relative">
-                            <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                            <select
-                                name="locality"
-                                required
-                                value={formData.locality}
-                                onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900 appearance-none cursor-pointer"
-                            >
-                                <option value="">Select Locality</option>
-                                {localities.map(loc => (
-                                    <option key={loc} value={loc}>{loc}</option>
-                                ))}
-                            </select>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Preferred Tenant(s)</label>
+                        <div className="flex flex-wrap gap-2">
+                            {["Any", "Family", "Bachelors (Men)", "Bachelors (Women)", "Students"].map(tag => (
+                                <button type="button" key={tag} onClick={() => toggleSelection("tenantPref", tag)}
+                                    className={`px-3 py-1 text-xs font-medium rounded-full border transition ${formData.tenantPref.includes(tag) ? "bg-gray-900 text-white border-gray-900" : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"}`}>
+                                    {tag}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Full Address */}
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Address / Landmark</label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                name="address"
-                                required
-                                value={formData.address}
-                                onChange={handleChange}
-                                placeholder="e.g. Near Nucleus Mall"
-                                className="w-full pl-4 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-gray-50 text-gray-900"
-                            />
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Amenities</label>
+                        <div className="flex flex-wrap gap-2">
+                            {["Parking", "Lift", "Power Backup", "WiFi", "Security", "Western Toilet"].map(tag => (
+                                <button type="button" key={tag} onClick={() => toggleSelection("amenities", tag)}
+                                    className={`px-3 py-1 text-xs font-medium rounded-full border transition ${formData.amenities.includes(tag) ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"}`}>
+                                    {tag}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
 
-                {status === "error" && (
-                    <p className="text-red-500 text-sm text-center">Connection failed. Please check internet or WhatsApp us.</p>
-                )}
+                {/* 5. Photos */}
+                <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Photos (Max 5)</h4>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        {previews.map((src, i) => (
+                            <div key={i} className="relative aspect-square">
+                                <img src={src} className="w-full h-full object-cover rounded-lg border border-gray-200" alt="preview" />
+                                <button type="button" onClick={() => removeFile(i)} className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">✕</button>
+                            </div>
+                        ))}
+                        {files.length < 5 && (
+                            <label className="aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition">
+                                <Camera className="w-6 h-6 text-gray-400" />
+                                <span className="text-[10px] text-gray-500 mt-1">Add Photo</span>
+                                <input type="file" multiple accept="image/*" className="hidden" onChange={handleFile} />
+                            </label>
+                        )}
+                    </div>
+                </div>
 
-                <div className="pt-2">
+                {/* Submit Button */}
+                <div className="pt-4">
                     <button
                         type="submit"
-                        disabled={status === "loading"}
+                        disabled={status === "submitting"}
                         className="w-full bg-gray-900 hover:bg-black disabled:bg-gray-400 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] flex items-center justify-center gap-2"
                     >
-                        {status === "loading" ? (
+                        {status === "submitting" ? (
                             <>
                                 <Loader2 className="w-5 h-5 animate-spin" />
-                                Submitting Details...
+                                Listing Property...
                             </>
                         ) : (
-                            "List My Property"
+                            "Submit Free Listing"
                         )}
                     </button>
-                    <p className="text-xs text-center text-gray-500 mt-3">
-                        By submitting, you agree to receive inquiries from RanchiRent.
+                    <p className="text-xs text-center text-gray-400 mt-3">
+                        By submitting, you agree to our terms. We protect your privacy.
                     </p>
                 </div>
             </form>
