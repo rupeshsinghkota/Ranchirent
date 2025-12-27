@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2, Eye } from "lucide-react";
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5c8YbliYmVPFoRoWcNYmgIu5gCiU_CPiXeGqGtp-qB08FKxFPsuGJBvt0k58wZRUA/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyw3yzDyA43pTUmt_VjrF5-_Dc-kgwCycmKucpD5AYqiQ5GeZWWKS6z-VHaHxg6GOmF/exec";
 
 export default function AdminManagePage() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
