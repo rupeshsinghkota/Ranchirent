@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Eye } from "lucide-react";
+import { Loader2, Eye, Pencil } from "lucide-react";
+import EditListingModal from "@/components/EditListingModal";
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyw3yzDyA43pTUmt_VjrF5-_Dc-kgwCycmKucpD5AYqiQ5GeZWWKS6z-VHaHxg6GOmF/exec";
 
@@ -11,8 +12,10 @@ export default function AdminManagePage() {
     const [properties, setProperties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [editingProperty, setEditingProperty] = useState<any>(null);
 
-    useEffect(() => {
+    const fetchProperties = () => {
+        setLoading(true);
         fetch(`${SCRIPT_URL}?key=ranchi_admin_secure`)
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch data");
@@ -20,7 +23,7 @@ export default function AdminManagePage() {
             })
             .then((data) => {
                 if (Array.isArray(data)) {
-                    setProperties(data.reverse()); // Show newest first
+                    setProperties(data.reverse());
                 } else {
                     throw new Error("Invalid data format received");
                 }
@@ -31,6 +34,10 @@ export default function AdminManagePage() {
                 setError(err.message || "Something went wrong");
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        fetchProperties();
     }, []);
 
     // Helper to get image
@@ -122,6 +129,13 @@ export default function AdminManagePage() {
                                                     >
                                                         <Eye className="w-4 h-4" />
                                                     </Link>
+                                                    <button
+                                                        onClick={() => setEditingProperty(p)}
+                                                        className="text-gray-400 hover:text-green-600 transition p-1"
+                                                        title="Edit Listing"
+                                                    >
+                                                        <Pencil className="w-4 h-4" />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -132,6 +146,17 @@ export default function AdminManagePage() {
                     </div>
                 )}
             </div>
+
+            {editingProperty && (
+                <EditListingModal
+                    property={editingProperty}
+                    onClose={() => setEditingProperty(null)}
+                    onSuccess={() => {
+                        fetchProperties();
+                        setEditingProperty(null);
+                    }}
+                />
+            )}
         </div>
     );
 }
