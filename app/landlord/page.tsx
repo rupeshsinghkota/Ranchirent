@@ -16,11 +16,18 @@ export default function LandlordPage() {
                         FOR PROPERTY OWNERS
                     </span>
                     <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-6">
-                        List Your Flat for <span className="text-brand-blue">FREE</span> in Ranchi.
+                        Find Verified Tenants for <span className="text-brand-blue">Your Flat</span> in Ranchi.
                     </h1>
                     <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                        Join 500+ owners who found verified tenants through RanchiRent. We handle the marketing, you handle the keys.
+                        Join 500+ owners who trust RanchiRent. We handle the marketing, calls, and visits so you don't have to.
                     </p>
+
+                    <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-8">
+                        <p className="text-sm font-bold text-blue-800 uppercase tracking-wide mb-1">Transparent Pricing</p>
+                        <p className="text-gray-700 font-medium">
+                            We charge 15 days brokerage from Owner & 15 days from Tenant only after a successful agreement. No upfront fees.
+                        </p>
+                    </div>
 
                     <div className="space-y-6">
                         <div className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-100 highlight-card hover:border-blue-100 transition">
@@ -46,8 +53,8 @@ export default function LandlordPage() {
                                 <CheckCircle className="w-6 h-6" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-gray-900 text-lg">Fast Closure</h3>
-                                <p className="text-gray-500">Most properties get rented within 7 days.</p>
+                                <h3 className="font-bold text-gray-900 text-lg">Fair Brokerage</h3>
+                                <p className="text-gray-500">50% rent from Owner + 50% from Tenant. Paid only upon finding you the right tenant.</p>
                             </div>
                         </div>
                     </div>
