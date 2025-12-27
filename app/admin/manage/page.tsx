@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, ExternalLink } from "lucide-react";
+import { Loader2, ExternalLink, Pencil, Eye } from "lucide-react";
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
 
 export default function AdminManagePage() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [properties, setProperties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -20,7 +20,7 @@ export default function AdminManagePage() {
             })
             .then((data) => {
                 if (Array.isArray(data)) {
-                    setProperties(data.reverse());
+                    setProperties(data.reverse()); // Show newest first
                 } else {
                     throw new Error("Invalid data format received");
                 }
@@ -42,8 +42,6 @@ export default function AdminManagePage() {
         }
         return url;
     };
-
-    // ... (keep getThumbnail)
 
     if (error) {
         return (
@@ -70,7 +68,6 @@ export default function AdminManagePage() {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
-            {/* ... keep header ... */}
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Manage Listings</h1>
@@ -123,13 +120,24 @@ export default function AdminManagePage() {
                                             <td className="p-4">{p.owner || "-"}</td>
                                             <td className="p-4">{p.phone || "-"}</td>
                                             <td className="p-4 text-right">
-                                                <Link
-                                                    href={`/property/${p.id}`}
-                                                    target="_blank"
-                                                    className="inline-block text-brand-blue hover:underline text-xs font-bold"
-                                                >
-                                                    View
-                                                </Link>
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <Link
+                                                        href={`/property/${p.id}`}
+                                                        target="_blank"
+                                                        className="text-gray-400 hover:text-brand-blue transition p-1"
+                                                        title="View on Site"
+                                                    >
+                                                        <Eye className="w-4 h-4" />
+                                                    </Link>
+                                                    <Link
+                                                        href="https://docs.google.com/spreadsheets/d/1Z_u1v4i7q9g3k5h6j8f0s2d4q5w8e9r7t6y5u4i3o/edit#gid=0"
+                                                        target="_blank"
+                                                        className="text-gray-400 hover:text-green-600 transition p-1"
+                                                        title="Edit in Sheet"
+                                                    >
+                                                        <Pencil className="w-4 h-4" />
+                                                    </Link>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
