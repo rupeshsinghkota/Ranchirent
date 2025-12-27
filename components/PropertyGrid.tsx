@@ -16,7 +16,7 @@ export default function PropertyGrid({ properties }: PropertyGridProps) {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">No properties found</h3>
                 <p className="text-gray-500 max-w-sm mb-6">
-                    We couldn't find any properties matching your criteria. Try changing your filters or search term.
+                    We couldn&apos;t find any properties matching your criteria. Try changing your filters or search term.
                 </p>
                 <a href="/listings" className="text-brand-blue font-semibold hover:text-blue-700">
                     Clear all filters
@@ -27,7 +27,7 @@ export default function PropertyGrid({ properties }: PropertyGridProps) {
 
     return (
         <section className="bg-transparent" id="listings">
-            <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="flex flex-col gap-4 sm:grid sm:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {properties.map((property) => (
                     <PropertyCard key={property.id} property={property} />
                 ))}

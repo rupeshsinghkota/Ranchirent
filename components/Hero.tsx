@@ -41,7 +41,7 @@ export default function Hero() {
                         </span>
                     </div>
 
-                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-8 leading-tight drop-shadow-sm">
+                    <h1 className="text-3xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-6 sm:mb-8 leading-tight drop-shadow-sm">
                         Find Your Home in <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Ranchi</span>
                     </h1>
 

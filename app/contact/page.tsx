@@ -3,7 +3,7 @@ import ContactForm from "@/components/ContactForm";
 
 export const metadata = {
     title: "Contact Us | RanchiRent",
-    description: "Get in touch with the RanchiRent team.",
+    description: "Let&apos;s discuss how we can help you find the perfect home in Ranchi.",
 };
 
 export default function ContactPage() {
@@ -11,7 +11,7 @@ export default function ContactPage() {
         <main className="min-h-screen bg-white">
             <div className="container mx-auto px-4 py-16">
                 <div className="text-center mb-16">
-                    <span className="text-brand-blue font-bold tracking-wider text-xs uppercase mb-2 block animate-fade-in-up">We're Here to Help</span>
+                    <span className="text-brand-blue font-bold tracking-wider text-xs uppercase mb-2 block animate-fade-in-up">We&apos;re Here to Help</span>
                     <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 mb-6 animate-fade-in-up delay-100">
                         Get in Touch
                     </h1>
@@ -62,7 +62,7 @@ export default function ContactPage() {
                     {/* Contact Form */}
                     <div className="bg-gray-50 p-10 rounded-3xl border border-gray-100 animate-fade-in-up delay-500">
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">Send a Message</h2>
-                        <p className="text-gray-500 mb-8">Fill out the form below and we'll get back to you within 24 hours.</p>
+                        <p className="text-gray-500 mb-8">Fill out the form below and we&apos;ll get back to you within 24 hours.</p>
 
                         <ContactForm />
                     </div>

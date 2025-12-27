@@ -14,9 +14,7 @@ export default function Footer() {
                                 Ranchi<span className="text-brand-blue">Rent</span>
                             </span>
                         </Link>
-                        <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-sm">
-                            We are Ranchi's verified rental marketplace. Bridging the gap between owners and tenants with trust, transparency, and technology.
-                        </p>
+                        <p className="text-gray-400 text-sm leading-relaxed">RanchiRent is Ranchi&apos;s most trusted brokerage service. We verify every property to ensure you get a safe and hassle-free rental experience.</p>
                         <div className="flex gap-4">
                             <a href="https://www.instagram.com/ranchirent/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
                                 <span className="font-bold">Ig</span>
@@ -97,6 +95,6 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-        </footer>
+        </footer >
     );
 }

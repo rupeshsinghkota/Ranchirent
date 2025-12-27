@@ -96,7 +96,7 @@ export default function Home() {
             <span className="text-brand-blue font-bold tracking-wider text-xs uppercase mb-2 block">Why RanchiRent?</span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">More Than Just a Listing Portal.</h2>
             <p className="text-gray-500 text-lg mb-8 leading-relaxed">
-              We are Ranchi's first tech-enabled brokerage service. We combine the ease of online searching with the trust of offline service.
+              We are Ranchi&apos;s first tech-enabled brokerage service. We combine the ease of online searching with the trust of offline service.
             </p>
 
             <div className="space-y-6">
@@ -177,7 +177,7 @@ export default function Home() {
               <div className="text-yellow-400 flex gap-1 mb-4 text-sm">
                 {[1, 2, 3, 4, 5].map(s => <span key={s}>★</span>)}
               </div>
-              <p className="text-gray-600 mb-6 italic leading-relaxed text-sm">"{review.text}"</p>
+              <p className="text-gray-600 mb-6 italic leading-relaxed text-sm">&quot;{review.text}&quot;</p>
               <div className="flex items-center gap-3 border-t border-gray-50 pt-4">
                 <div className="w-10 h-10 bg-brand-blue/10 rounded-full flex items-center justify-center font-bold text-brand-blue text-sm">
                   {review.name[0]}

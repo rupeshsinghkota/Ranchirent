@@ -2,7 +2,7 @@
 
 import { localities } from "@/data/localities";
 import { useState } from "react";
-import { Camera, Check, Loader2, Upload } from "lucide-react";
+import { Camera, Check, Loader2 } from "lucide-react";
 
 // The new deployment URL
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
@@ -207,8 +207,8 @@ export default function FreshVerificationPage() {
                                     type="button"
                                     onClick={() => toggleTenantPref(p)}
                                     className={`px-3 py-1.5 text-sm rounded-full border transition ${form.tenantPref.includes(p)
-                                            ? "bg-purple-600 text-white border-purple-600"
-                                            : "bg-gray-50 text-gray-600 border-gray-200"
+                                        ? "bg-purple-600 text-white border-purple-600"
+                                        : "bg-gray-50 text-gray-600 border-gray-200"
                                         }`}
                                 >
                                     {p}
@@ -239,7 +239,7 @@ export default function FreshVerificationPage() {
                     <div className="grid grid-cols-3 gap-2 mb-3">
                         {previews.map((src, i) => (
                             <div key={i} className="relative aspect-square">
-                                <img src={src} className="w-full h-full object-cover rounded-lg" />
+                                <img src={src} alt="Uploaded Property" className="w-full h-32 object-cover rounded-lg border border-gray-200" />
                                 <button type="button" onClick={() => removeFile(i)} className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center">✕</button>
                             </div>
                         ))}

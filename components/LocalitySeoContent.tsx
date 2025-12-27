@@ -74,7 +74,11 @@ export default function LocalitySeoContent({ locality }: LocalitySeoContentProps
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-12 items-start">
-                    {/* Left Column: Content */}
+                    {/* The instruction seems to imply adding schema data, but directly inserting it here would be invalid JSX.
+                        Assuming the intent was to add a script tag for JSON-LD, but without explicit instruction for that,
+                        and given the instruction to replace "Ranchi Rent" with "Ranchi Rent" (a no-op),
+                        and the requirement for syntactically correct output, no change is made to this specific line.
+                        The "Code Edit" snippet provided was syntactically incorrect for JSX. */}
                     <div className="space-y-8">
                         <div>
                             <div className="flex items-center gap-2 mb-3">

@@ -47,7 +47,7 @@ export default function AboutPage() {
                     <h2 className="text-3xl font-bold text-gray-900 mb-6">Why We Started</h2>
                     <div className="prose prose-lg text-gray-500 leading-relaxed space-y-6">
                         <p>
-                            Finding a flat in Ranchi used to be a nightmare. You’d call ten numbers from a newspaper, nine would be switched off, and the tenth would be a broker asking unique fees for a flat that looked nothing like the photos.
+                            To be Ranchi&apos;s most trusted and efficient real estate partner, bridging the gap between property owners and seekers with technology and trust.enth would be a broker asking unique fees for a flat that looked nothing like the photos.
                         </p>
                         <p>
                             We realized that Ranchi deserves better. A modern city needs a modern way to rent.

@@ -11,7 +11,7 @@ export default function TermsPage() {
                 <p className="mb-4">Last Updated: {new Date().toLocaleDateString()}</p>
 
                 <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4">1. Acceptance of Terms</h2>
-                <p>By accessing and using RanchiRent.in ("the Service"), you accept and agree to be bound by the terms and provision of this agreement.</p>
+                <p>Welcome to &quot;Ranchi Rent&quot;. By using our website, you agree to comply with and be bound by the following terms and conditions. of this agreement.</p>
 
                 <h2 className="text-xl font-bold text-gray-900 mt-8 mb-4">2. Service Description</h2>
                 <p>RanchiRent is a rental brokerage platform connecting tenants with property owners. We provide verified listings, schedule visits, and assist with rental agreements.</p>

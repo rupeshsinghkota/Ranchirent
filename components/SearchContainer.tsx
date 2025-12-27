@@ -29,7 +29,9 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
     const [loading, setLoading] = useState(initialProperties.length === 0);
 
     // Update filters if URL params change
+    // Update filters if URL params change
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setFilters({
             locality: searchParams.get("locality") || "",
             query: searchParams.get("query") || ""
@@ -130,7 +132,7 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
     return (
         <div className="min-h-screen bg-white">
             {/* Sticky Filter Bar */}
-            <div className="pt-20 pb-4">
+            <div className="pt-20 pb-0">
                 <FilterBar
                     filters={filters}
                     onLocalityChange={(locality) => setFilters(prev => ({ ...prev, locality }))}
@@ -139,20 +141,22 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
                 />
             </div>
 
-            <div className="container mx-auto px-4 py-8 flex-grow">
+            <div className="container mx-auto px-4 pt-1 pb-4 md:py-8 flex-grow">
                 {/* Premium Header Section */}
-                <div className="mb-8 border-b border-gray-100 pb-8">
-                    <Breadcrumbs items={breadcrumbItems} />
+                <div className="mb-2 md:mb-8 border-b border-gray-100 pb-2 md:pb-8">
+                    <div className="hidden md:block">
+                        <Breadcrumbs items={breadcrumbItems} />
+                    </div>
 
-                    <div className="mt-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div className="mt-2 md:mt-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
                         <div>
-                            <span className="text-brand-blue font-bold tracking-wider text-xs uppercase mb-2 block">
+                            <span className="text-brand-blue font-bold tracking-wider text-[10px] md:text-xs uppercase mb-1 md:mb-2 block">
                                 {filters.locality ? "Locality View" : "All Properties"}
                             </span>
-                            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">
+                            <h1 className="text-xl md:text-4xl font-extrabold text-gray-900 mb-1 md:mb-3 truncate">
                                 {pageTitle}
                             </h1>
-                            <p className="text-gray-500 max-w-2xl text-lg leading-relaxed">
+                            <p className="text-gray-500 max-w-2xl text-lg leading-relaxed hidden md:block">
                                 {pageSubtitle}
                             </p>
                         </div>

@@ -15,7 +15,7 @@ interface FilterBarProps {
 
 export default function FilterBar({ filters, onLocalityChange, onQueryChange, totalResults }: FilterBarProps) {
     return (
-        <div className="sticky top-20 z-40 bg-white border-b border-gray-200 shadow-sm py-4">
+        <div className="sticky top-20 z-40 bg-white border-b border-gray-200 shadow-sm py-2 md:py-4">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto flex-grow max-w-4xl">

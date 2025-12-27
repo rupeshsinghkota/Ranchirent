@@ -56,7 +56,7 @@ export default function HomeSeoContent() {
                                 <h3 className="text-xl font-bold text-gray-900">More Than Just Listings</h3>
                             </div>
                             <p className="text-gray-600 leading-relaxed">
-                                RanchiRent is your complete relocation partner. Beyond connecting you with homes, we assist with **Rental Agreements, Police Verification**, and even **Movers & Packers coordination** to ensure a seamless transition.
+                                We don&apos;t just list properties; we verify them. Our team visits every flat, house, and hostel to ensure the photos are real and the owners are legitimate.nts, Police Verification**, and even **Movers & Packers coordination** to ensure a seamless transition.
                             </p>
                         </div>
                     </div>

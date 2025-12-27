@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Camera, X, ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { Camera, X, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 
 export default function PropertyGallery({ images, title }: { images: string[], title: string }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +36,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
     return (
         <>
             {/* Desktop/Tablet Grid */}
-            <div className="grid grid-cols-4 grid-rows-2 gap-2 h-96 rounded-2xl overflow-hidden cursor-pointer group">
+            <div className="hidden sm:grid grid-cols-4 grid-rows-2 gap-2 h-96 rounded-2xl overflow-hidden cursor-pointer group">
                 {/* Main Large Image */}
                 <div
                     className="col-span-2 row-span-2 relative overflow-hidden"
@@ -76,19 +77,33 @@ export default function PropertyGallery({ images, title }: { images: string[], t
                 ))}
             </div>
 
-            {/* Mobile Carousel (Visible only on small screens, hiding the grid) */}
-            <div className="sm:hidden -mx-4 h-72 relative overflow-hidden">
+            {/* Mobile Carousel (Immersive Hero) */}
+            <div className="sm:hidden -mx-4 sm:mx-0 h-[45vh] relative overflow-hidden shadow-sm">
                 <Image
                     src={images[0]}
                     alt={title}
                     fill
                     sizes="100vw"
                     className="object-cover"
+                    priority
                     onClick={() => openLightbox(0)}
                 />
-                <div className="absolute bottom-4 right-4 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 z-10">
-                    <Camera className="w-3 h-3" /> {images.length} Photos
+
+                {/* Mobile Floating Back Button */}
+                <Link href="/listings" className="absolute top-4 left-4 z-20 w-10 h-10 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 shadow-lg active:scale-95 transition-transform">
+                    <ArrowLeft className="w-5 h-5 drop-shadow-sm" />
+                </Link>
+
+                {/* Mobile Floating Share/Action (Optional, placeholder for balance) */}
+
+                {/* Modern Photo Badge */}
+                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5 z-10 shadow-sm">
+                    <Camera className="w-3.5 h-3.5" />
+                    <span>{images.length} Photos</span>
                 </div>
+
+                {/* Gradient Overlay for Text Contrast at bottom (if we had text, kept subtle for polish) */}
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
             </div>
 
             {/* Lightbox Modal */}
@@ -102,7 +117,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
                         <X className="w-8 h-8" />
                     </button>
 
-                    <div className="relative w-full max-w-5xl aspect-video md:aspect-auto md:h-[80vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                    <div className="relative w-full max-w-5xl h-[70vh] md:h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                         <Image
                             src={images[currentIndex]}
                             alt={`Gallery ${currentIndex + 1}`}
