@@ -21,7 +21,7 @@ export default function FreshVerificationPage() {
         deposit: "",
         type: "",         // New
         furnishing: "",   // New
-        tenantPref: "",   // New
+        tenantPref: [] as string[],   // Changed to Array
         amenities: [] as string[]
     });
 
@@ -29,6 +29,13 @@ export default function FreshVerificationPage() {
         setForm(prev => {
             if (prev.amenities.includes(item)) return { ...prev, amenities: prev.amenities.filter(i => i !== item) };
             return { ...prev, amenities: [...prev.amenities, item] };
+        });
+    };
+
+    const toggleTenantPref = (item: string) => {
+        setForm(prev => {
+            if (prev.tenantPref.includes(item)) return { ...prev, tenantPref: prev.tenantPref.filter(i => i !== item) };
+            return { ...prev, tenantPref: [...prev.tenantPref, item] };
         });
     };
 
@@ -92,7 +99,7 @@ export default function FreshVerificationPage() {
                 deposit: form.deposit,
                 type: form.type,
                 furnishing: form.furnishing,
-                tenantPref: form.tenantPref,
+                tenantPref: form.tenantPref.join(", "), // Join array to string
                 amenities: form.amenities.join(", "),
                 images: imageUrls, // Array of Strings
             };
@@ -107,7 +114,7 @@ export default function FreshVerificationPage() {
             setStatus("success");
             setForm({
                 owner: "", phone: "", address: "", location: "", rent: "", deposit: "",
-                type: "", furnishing: "", tenantPref: "", amenities: []
+                type: "", furnishing: "", tenantPref: [], amenities: []
             });
             setFiles([]);
             setPreviews([]);
@@ -190,12 +197,26 @@ export default function FreshVerificationPage() {
                         {["Unfurnished", "Semi-Furnished", "Full Furnished"].map(f => <option key={f} value={f}>{f}</option>)}
                     </select>
 
-                    {/* Tenant Preference */}
-                    <select required className="w-full p-3 bg-gray-50 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
-                        value={form.tenantPref} onChange={e => setForm({ ...form, tenantPref: e.target.value })}>
-                        <option value="">Preferred Tenant</option>
-                        {["Any", "Family", "Bachelors (Men)", "Bachelors (Women)", "Students"].map(p => <option key={p} value={p}>{p}</option>)}
-                    </select>
+                    {/* Tenant Preference - Multi Select */}
+                    <div>
+                        <label className="text-sm font-semibold text-gray-700 mb-2 block">Preferred Tenant (Select Multiple)</label>
+                        <div className="flex flex-wrap gap-2">
+                            {["Any", "Family", "Bachelors (Men)", "Bachelors (Women)", "Students"].map(p => (
+                                <button
+                                    key={p}
+                                    type="button"
+                                    onClick={() => toggleTenantPref(p)}
+                                    className={`px-3 py-1.5 text-sm rounded-full border transition ${form.tenantPref.includes(p)
+                                            ? "bg-purple-600 text-white border-purple-600"
+                                            : "bg-gray-50 text-gray-600 border-gray-200"
+                                        }`}
+                                >
+                                    {p}
+                                </button>
+                            ))}
+                        </div>
+                        {form.tenantPref.length === 0 && <p className="text-xs text-red-400 mt-1">Please select at least one.</p>}
+                    </div>
                 </div>
 
                 {/* Amenities */}
