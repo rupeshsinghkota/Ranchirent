@@ -10,15 +10,25 @@ export default function AdminManagePage() {
     const [properties, setProperties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const [error, setError] = useState("");
+
     useEffect(() => {
         fetch(SCRIPT_URL)
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to fetch data");
+                return res.json();
+            })
             .then((data) => {
-                setProperties(data.reverse()); // Show newest first
+                if (Array.isArray(data)) {
+                    setProperties(data.reverse());
+                } else {
+                    throw new Error("Invalid data format received");
+                }
                 setLoading(false);
             })
             .catch((err) => {
                 console.error(err);
+                setError(err.message || "Something went wrong");
                 setLoading(false);
             });
     }, []);
@@ -33,8 +43,34 @@ export default function AdminManagePage() {
         return url;
     };
 
+    // ... (keep getThumbnail)
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-red-100 max-w-md w-full text-center">
+                    <div className="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                        <Loader2 className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Error Loading Listings</h3>
+                    <p className="text-gray-500 text-sm mb-6">{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="bg-gray-900 text-white px-4 py-2 rounded-lg font-bold text-sm w-full"
+                    >
+                        Retry
+                    </button>
+                    <p className="mt-4 text-xs text-gray-400">
+                        If this persists, check the Google Script or your internet connection.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 py-12">
+            {/* ... keep header ... */}
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Manage Listings</h1>
@@ -74,18 +110,18 @@ export default function AdminManagePage() {
                                                 <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden relative">
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img
-                                                        src={getThumbnail(p.image?.split(",")[0]) || "https://via.placeholder.com/100"}
+                                                        src={getThumbnail(typeof p.image === 'string' ? p.image.split(",")[0] : "") || "https://via.placeholder.com/100"}
                                                         alt=""
                                                         className="w-full h-full object-cover"
                                                     />
                                                 </div>
                                             </td>
-                                            <td className="p-4 font-mono text-xs text-gray-400">#{p.id}</td>
-                                            <td className="p-4 font-bold text-gray-900">{p.type}</td>
-                                            <td className="p-4">{p.location}</td>
-                                            <td className="p-4 font-medium">₹{Number(p.rent).toLocaleString()}</td>
-                                            <td className="p-4">{p.owner}</td>
-                                            <td className="p-4">{p.phone}</td>
+                                            <td className="p-4 font-mono text-xs text-gray-400">#{p.id || "N/A"}</td>
+                                            <td className="p-4 font-bold text-gray-900">{p.type || "Unknown Type"}</td>
+                                            <td className="p-4">{p.location || "Unknown"}</td>
+                                            <td className="p-4 font-medium">₹{Number(p.rent || 0).toLocaleString()}</td>
+                                            <td className="p-4">{p.owner || "-"}</td>
+                                            <td className="p-4">{p.phone || "-"}</td>
                                             <td className="p-4 text-right">
                                                 <Link
                                                     href={`/property/${p.id}`}
