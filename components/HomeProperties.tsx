@@ -3,7 +3,7 @@ import VerifiedFeed from "@/components/VerifiedFeed";
 
 // Server-side Fetch with Cache and Timeout
 async function getProperties() {
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5c8YbliYmVPFoRoWcNYmgIu5gCiU_CPiXeGqGtp-qB08FKxFPsuGJBvt0k58wZRUA/exec";
 
     try {
         // 1 Hour Cache - Static Speed

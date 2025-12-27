@@ -8,10 +8,13 @@ import PropertyCard from "@/components/PropertyCard";
 import { Property } from "@/data/properties";
 
 // The same Script URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5c8YbliYmVPFoRoWcNYmgIu5gCiU_CPiXeGqGtp-qB08FKxFPsuGJBvt0k58wZRUA/exec";
 
 interface SheetProperty {
     id: number;
+    owner: string;
+    phone: string;
+    address: string;
     location: string;
     rent: number;
     deposit: number;

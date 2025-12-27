@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Camera, Check, Loader2 } from "lucide-react";
 
 // The new deployment URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz5c8YbliYmVPFoRoWcNYmgIu5gCiU_CPiXeGqGtp-qB08FKxFPsuGJBvt0k58wZRUA/exec";
 
 export default function FreshVerificationPage() {
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
