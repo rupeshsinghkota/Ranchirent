@@ -110,8 +110,8 @@ export default function AdminManagePage() {
                                             <td className="p-4 font-bold text-gray-900">{p.type || "Unknown Type"}</td>
                                             <td className="p-4">{p.location || "Unknown"}</td>
                                             <td className="p-4 font-medium">₹{Number(p.rent || 0).toLocaleString()}</td>
-                                            <td className="p-4">{p.owner || "-"}</td>
-                                            <td className="p-4">{p.phone || "-"}</td>
+                                            <td className="p-4">{p.owner || p.Owner || p.OwnerName || p.name || "-"}</td>
+                                            <td className="p-4">{p.phone || p.Phone || p.Mobile || p.contact || "-"}</td>
                                             <td className="p-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
