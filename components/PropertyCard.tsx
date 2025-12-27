@@ -10,7 +10,7 @@ interface PropertyProps {
 
 export default function PropertyCard({ property }: PropertyProps) {
     // Helper to validate and get safe image URL
-    const getImageUrl = (url: string | undefined) => {
+    const getImageUrl = (url: string | undefined | null) => {
         if (!url || url === "No Image") return "/property-placeholder.png";
         try {
             new URL(url);
