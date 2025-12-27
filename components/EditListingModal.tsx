@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Camera } from "lucide-react";
 import { localities } from "@/data/localities";
 
 interface EditListingModalProps {
@@ -13,6 +13,9 @@ interface EditListingModalProps {
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyw3yzDyA43pTUmt_VjrF5-_Dc-kgwCycmKucpD5AYqiQ5GeZWWKS6z-VHaHxg6GOmF/exec";
 
 export default function EditListingModal({ property, onClose, onSuccess }: EditListingModalProps) {
+    const [files, setFiles] = useState<File[]>([]);
+    const [previews, setPreviews] = useState<string[]>([]);
+    const [existingImages, setExistingImages] = useState<string[]>([]);
     const [formData, setFormData] = useState({
         owner: "",
         phone: "",
@@ -23,8 +26,7 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
         type: "",
         furnishing: "",
         tenantPref: "",
-        amenities: "",
-        images: ""
+        amenities: ""
     });
     const [saving, setSaving] = useState(false);
 
@@ -40,17 +42,65 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
                 type: property.type || "",
                 furnishing: property.furnishing || "",
                 tenantPref: property.tenantPref || "",
-                amenities: property.amenities || "",
-                images: property.image || ""
+                amenities: property.amenities || ""
             });
+
+            // Parse existing images
+            if (property.image && typeof property.image === 'string') {
+                const imageUrls = property.image.split(',').map((url: string) => url.trim()).filter((url: string) => url);
+                setExistingImages(imageUrls);
+            }
         }
     }, [property]);
+
+    // File Handling
+    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const newFiles = Array.from(e.target.files);
+            const totalImages = existingImages.length + files.length + newFiles.length;
+            if (totalImages > 5) {
+                alert("Maximum 5 images allowed");
+                return;
+            }
+            const validFiles = newFiles.filter(f => f.size < 4 * 1024 * 1024); // 4MB limit
+            setFiles(prev => [...prev, ...validFiles]);
+            setPreviews(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
+        }
+    };
+
+    const removeFile = (index: number) => {
+        setFiles(prev => prev.filter((_, i) => i !== index));
+        setPreviews(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const removeExistingImage = (index: number) => {
+        setExistingImages(prev => prev.filter((_, i) => i !== index));
+    };
+
+    // ImgBB Upload
+    const uploadToImgBB = async (file: File) => {
+        const formData = new FormData();
+        formData.append("image", file);
+        const res = await fetch("https://api.imgbb.com/1/upload?key=639af8c66e1d22558be5338e60d150f5", {
+            method: "POST",
+            body: formData
+        });
+        const data = await res.json();
+        if (data.success) return data.data.url;
+        throw new Error("Image Upload Failed");
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
 
         try {
+            // Upload new images
+            const newImageUrls = await Promise.all(files.map(uploadToImgBB));
+
+            // Combine existing and new images
+            const allImageUrls = [...existingImages, ...newImageUrls];
+
             const payload = {
                 action: "edit",
                 id: property.id,
@@ -64,7 +114,7 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
                 furnishing: formData.furnishing,
                 tenantPref: formData.tenantPref,
                 amenities: formData.amenities,
-                images: formData.images
+                images: allImageUrls
             };
 
             await fetch(SCRIPT_URL, {
@@ -236,16 +286,52 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
 
                     {/* Images */}
                     <div className="space-y-4">
-                        <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Images (URLs)</h3>
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">Image URLs (comma separated)</label>
-                            <textarea
-                                rows={3}
-                                value={formData.images}
-                                onChange={(e) => setFormData({ ...formData, images: e.target.value })}
-                                className="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
-                                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                            />
+                        <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Images (Max 5)</h3>
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                            {/* Existing Images */}
+                            {existingImages.map((src, i) => (
+                                <div key={`existing-${i}`} className="relative aspect-square">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={src} className="w-full h-full object-cover rounded-lg border border-gray-200" alt="existing" />
+                                    <button
+                                        type="button"
+                                        onClick={() => removeExistingImage(i)}
+                                        className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                                    >
+                                        ✕
+                                    </button>
+                                    <div className="absolute bottom-1 left-1 bg-blue-500 text-white px-1.5 py-0.5 rounded text-[9px] font-bold">
+                                        OLD
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* New Image Previews */}
+                            {previews.map((src, i) => (
+                                <div key={`new-${i}`} className="relative aspect-square">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={src} className="w-full h-full object-cover rounded-lg border border-gray-200" alt="preview" />
+                                    <button
+                                        type="button"
+                                        onClick={() => removeFile(i)}
+                                        className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                                    >
+                                        ✕
+                                    </button>
+                                    <div className="absolute bottom-1 left-1 bg-green-500 text-white px-1.5 py-0.5 rounded text-[9px] font-bold">
+                                        NEW
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Upload Button */}
+                            {(existingImages.length + files.length) < 5 && (
+                                <label className="aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition">
+                                    <Camera className="w-6 h-6 text-gray-400" />
+                                    <span className="text-[10px] text-gray-500 mt-1">Add Photo</span>
+                                    <input type="file" multiple accept="image/*" className="hidden" onChange={handleFile} />
+                                </label>
+                            )}
                         </div>
                     </div>
 
