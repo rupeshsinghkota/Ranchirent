@@ -9,12 +9,23 @@ interface PropertyProps {
 }
 
 export default function PropertyCard({ property }: PropertyProps) {
+    // Helper to validate and get safe image URL
+    const getImageUrl = (url: string | undefined) => {
+        if (!url || url === "No Image") return "/property-placeholder.png";
+        try {
+            new URL(url);
+            return url;
+        } catch {
+            return "/property-placeholder.png";
+        }
+    };
+
     return (
         <div className="group rounded-xl border border-gray-100 bg-white shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-row sm:flex-col hover:-translate-y-1 h-28 sm:h-auto">
             {/* Image Placeholder */}
             <Link href={`/property/${property.id}`} className="relative w-[32%] sm:w-full sm:aspect-[4/3] flex-shrink-0 bg-gray-100 block group-hover:opacity-95 transition-opacity">
                 <Image
-                    src={property.image || "/property-placeholder.png"}
+                    src={getImageUrl(property.image)}
                     alt={property.title}
                     fill
                     sizes="(max-width: 768px) 35vw, (max-width: 1200px) 50vw, 33vw"
