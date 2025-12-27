@@ -12,7 +12,7 @@ export default function PropertyCard({ property }: PropertyProps) {
     return (
         <div className="group rounded-xl border border-gray-100 bg-white shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-row sm:flex-col hover:-translate-y-1 h-28 sm:h-auto">
             {/* Image Placeholder */}
-            <div className="relative w-[32%] sm:w-full sm:aspect-[4/3] flex-shrink-0 bg-gray-100">
+            <Link href={`/property/${property.id}`} className="relative w-[32%] sm:w-full sm:aspect-[4/3] flex-shrink-0 bg-gray-100 block group-hover:opacity-95 transition-opacity">
                 <Image
                     src={property.image || "/property-placeholder.png"}
                     alt={property.title}
@@ -28,7 +28,7 @@ export default function PropertyCard({ property }: PropertyProps) {
                 <div className="absolute bottom-3 left-3 bg-gray-900/40 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-semibold text-white flex items-center gap-1 z-10 border border-white/10 uppercase tracking-wide hidden sm:flex">
                     {property.type}
                 </div>
-            </div>
+            </Link>
 
             <div className="p-2 sm:p-4 flex flex-col flex-grow justify-between">
                 <div>
