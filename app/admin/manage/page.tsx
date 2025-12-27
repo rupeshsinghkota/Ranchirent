@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, ExternalLink, Pencil, Eye } from "lucide-react";
+import { Loader2, Eye } from "lucide-react";
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw13SI62o3rbRRLFFs71ICaV8n5-l7JNhI9k8qEUKo1WurDHtFA9JfTt4GrG951barq/exec";
 
@@ -71,13 +71,6 @@ export default function AdminManagePage() {
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Manage Listings</h1>
-                    <Link
-                        href="https://docs.google.com/spreadsheets/d/1Z_u1v4i7q9g3k5h6j8f0s2d4q5w8e9r7t6y5u4i3o/edit#gid=0"
-                        target="_blank"
-                        className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-green-700 transition"
-                    >
-                        <ExternalLink className="w-4 h-4" /> Open Spreadsheet
-                    </Link>
                 </div>
 
                 {loading ? (
@@ -128,14 +121,6 @@ export default function AdminManagePage() {
                                                         title="View on Site"
                                                     >
                                                         <Eye className="w-4 h-4" />
-                                                    </Link>
-                                                    <Link
-                                                        href="https://docs.google.com/spreadsheets/d/1Z_u1v4i7q9g3k5h6j8f0s2d4q5w8e9r7t6y5u4i3o/edit#gid=0"
-                                                        target="_blank"
-                                                        className="text-gray-400 hover:text-green-600 transition p-1"
-                                                        title="Edit in Sheet"
-                                                    >
-                                                        <Pencil className="w-4 h-4" />
                                                     </Link>
                                                 </div>
                                             </td>
