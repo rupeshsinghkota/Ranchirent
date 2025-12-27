@@ -13,7 +13,7 @@ export default function AdminManagePage() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch(SCRIPT_URL)
+        fetch(`${SCRIPT_URL}?key=ranchi_admin_secure`)
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch data");
                 return res.json();
