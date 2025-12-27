@@ -4,6 +4,7 @@ export const localities = [
     "Bariatu",
     "BIT Mesra",
     "BIT More",
+    "Boreya",
     "Booty More",
     "Chiraundi",
     "Chutia",

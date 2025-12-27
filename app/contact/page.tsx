@@ -1,4 +1,5 @@
-import { Mail, MapPin, Phone, ArrowRight } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
+import ContactForm from "@/components/ContactForm";
 
 export const metadata = {
     title: "Contact Us | RanchiRent",
@@ -63,23 +64,7 @@ export default function ContactPage() {
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">Send a Message</h2>
                         <p className="text-gray-500 mb-8">Fill out the form below and we'll get back to you within 24 hours.</p>
 
-                        <form className="space-y-5">
-                            <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
-                                <input type="text" placeholder="John Doe" className="w-full px-4 py-3 rounded-xl border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue transition" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Mobile Number</label>
-                                <input type="tel" placeholder="+91 98XXX XXXXX" className="w-full px-4 py-3 rounded-xl border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue transition" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-2">Message</label>
-                                <textarea rows={4} placeholder="How can we help you?" className="w-full px-4 py-3 rounded-xl border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue transition"></textarea>
-                            </div>
-                            <button className="w-full bg-brand-blue text-white font-bold py-4 rounded-xl hover:bg-blue-700 hover:shadow-lg hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
-                                Send Message <ArrowRight className="w-5 h-5" />
-                            </button>
-                        </form>
+                        <ContactForm />
                     </div>
                 </div>
             </div>
