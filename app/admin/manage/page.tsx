@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Eye, Pencil } from "lucide-react";
+import { Loader2, Eye, Pencil, Power } from "lucide-react";
 import EditListingModal from "@/components/EditListingModal";
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyw3yzDyA43pTUmt_VjrF5-_Dc-kgwCycmKucpD5AYqiQ5GeZWWKS6z-VHaHxg6GOmF/exec";
@@ -65,6 +65,32 @@ export default function AdminManagePage() {
         setIsAuthenticated(false);
         localStorage.removeItem("admin_auth");
         setPassword("");
+    };
+
+    const handleSuspendToggle = async (property: any) => {
+        const action = property.isSuspended ? "activate" : "suspend";
+        const confirmMsg = property.isSuspended
+            ? "Activate this listing? It will be visible to users."
+            : "Suspend this listing? It will be hidden from users.";
+
+        if (!confirm(confirmMsg)) return;
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: action,
+                    id: property.id
+                })
+            });
+
+            fetchProperties();
+        } catch (error) {
+            console.error("Suspend/Activate failed:", error);
+            alert("Failed to update listing status. Please try again.");
+        }
     };
 
     // Helper to get image
@@ -188,7 +214,18 @@ export default function AdminManagePage() {
                                                 </div>
                                             </td>
                                             <td className="p-4 font-mono text-xs text-gray-400">#{p.id || "N/A"}</td>
-                                            <td className="p-4 font-bold text-gray-900">{p.type || "Unknown Type"}</td>
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`font-bold ${p.isSuspended ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
+                                                        {p.type || "Unknown Type"}
+                                                    </span>
+                                                    {p.isSuspended && (
+                                                        <span className="px-2 py-0.5 bg-gray-200 text-gray-600 text-[9px] font-bold rounded uppercase">
+                                                            Suspended
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
                                             <td className="p-4">{p.location || "Unknown"}</td>
                                             <td className="p-4 font-medium">₹{Number(p.rent || 0).toLocaleString()}</td>
                                             <td className="p-4">{p.owner || p.Owner || p.OwnerName || p.name || "-"}</td>
@@ -209,6 +246,13 @@ export default function AdminManagePage() {
                                                         title="Edit Listing"
                                                     >
                                                         <Pencil className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleSuspendToggle(p)}
+                                                        className={`transition p-1 ${p.isSuspended ? 'text-gray-400 hover:text-green-600' : 'text-gray-400 hover:text-red-600'}`}
+                                                        title={p.isSuspended ? "Activate Listing" : "Suspend Listing"}
+                                                    >
+                                                        <Power className="w-4 h-4" />
                                                     </button>
                                                 </div>
                                             </td>
