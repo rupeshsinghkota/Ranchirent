@@ -10,7 +10,7 @@ interface EditListingModalProps {
     onSuccess: () => void;
 }
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6AsKgaiiRMvkqPJOh1EnFllCzFG5grAr2rP3wpPlTXM-U5Xro8TD7uT60ipgHFhV5/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykc3VpXhn8FDcRFWYcbmEW9QINOyYwuIcoP9ILTDZS8gZY8u8DP4oj69TdGIp9lzJ4/exec";
 
 export default function EditListingModal({ property, onClose, onSuccess }: EditListingModalProps) {
     const [files, setFiles] = useState<File[]>([]);

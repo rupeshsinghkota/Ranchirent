@@ -2,7 +2,7 @@ import VerifiedFeed from "@/components/VerifiedFeed";
 
 // Server-side Fetch with Cache and Timeout strategy
 async function getProperties() {
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6AsKgaiiRMvkqPJOh1EnFllCzFG5grAr2rP3wpPlTXM-U5Xro8TD7uT60ipgHFhV5/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykc3VpXhn8FDcRFWYcbmEW9QINOyYwuIcoP9ILTDZS8gZY8u8DP4oj69TdGIp9lzJ4/exec";
 
     try {
         // Aggressive Caching: Revalidate every 1 hour (3600 seconds)
