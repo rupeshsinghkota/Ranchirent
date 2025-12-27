@@ -13,7 +13,7 @@ import { Loader2 } from "lucide-react";
 
 // ✅ THE NEW FRESH START URL
 // The new deployment URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyw3yzDyA43pTUmt_VjrF5-_Dc-kgwCycmKucpD5AYqiQ5GeZWWKS6z-VHaHxg6GOmF/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz6AsKgaiiRMvkqPJOh1EnFllCzFG5grAr2rP3wpPlTXM-U5Xro8TD7uT60ipgHFhV5/exec";
 
 interface SearchContentProps {
     initialProperties?: Property[];
