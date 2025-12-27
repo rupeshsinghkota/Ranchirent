@@ -108,13 +108,16 @@ export default function PropertyGallery({ images, title }: { images: string[], t
 
             {/* Lightbox Modal */}
             {isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4 backdrop-blur-md" onClick={() => setIsOpen(false)}>
+                <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 backdrop-blur-md" onClick={() => setIsOpen(false)}>
 
                     <button
-                        className="absolute top-4 right-4 text-white/50 hover:text-white p-2 z-50"
-                        onClick={() => setIsOpen(false)}
+                        className="absolute top-4 right-4 text-white p-2 z-[110] bg-black/20 rounded-full hover:bg-white/20 transition-colors"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsOpen(false);
+                        }}
                     >
-                        <X className="w-8 h-8" />
+                        <X className="w-8 h-8 drop-shadow-md" />
                     </button>
 
                     <div className="relative w-full max-w-5xl h-[70vh] md:h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
