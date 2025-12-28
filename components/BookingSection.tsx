@@ -8,9 +8,10 @@ interface BookingSectionProps {
     propertyTitle: string;
     propertyLocation: string;
     propertyPrice: string;
+    propertyId: string | number;
 }
 
-export default function BookingSection({ propertyTitle, propertyLocation, propertyPrice }: BookingSectionProps) {
+export default function BookingSection({ propertyTitle, propertyLocation, propertyPrice, propertyId }: BookingSectionProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
@@ -29,7 +30,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
 
                 <div className="space-y-3">
                     <a
-                        href={`https://wa.me/917557777987?text=Hi, I saw ${propertyTitle} in ${propertyLocation} on RanchiRent.in. Need more info.`}
+                        href={`https://wa.me/917557777987?text=Hi, I saw ${propertyTitle} (ID: ${propertyId}) in ${propertyLocation} on RanchiRent.in. Need more info.`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2 w-full rounded-xl border border-gray-200 bg-white py-3.5 text-base font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition"
@@ -75,6 +76,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
                 onClose={() => setIsModalOpen(false)}
                 propertyTitle={propertyTitle}
                 propertyLocation={propertyLocation}
+                propertyId={propertyId}
             />
         </>
     );

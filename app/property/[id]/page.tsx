@@ -193,6 +193,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
                         propertyTitle={property.title}
                         propertyLocation={property.location}
                         propertyPrice={property.price}
+                        propertyId={property.id}
                     />
                 </div>
             </div>

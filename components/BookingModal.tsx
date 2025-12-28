@@ -8,11 +8,12 @@ interface BookingModalProps {
     onClose: () => void;
     propertyTitle: string;
     propertyLocation: string;
+    propertyId: string | number;
 }
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhU5xYa1CVrQWJ49VBEsXhSuk_fcUD6Mo1hzm4IgTnaAiTvuYi1xkOx0plDtS9SEGO/exec";
 
-export default function BookingModal({ isOpen, onClose, propertyTitle, propertyLocation }: BookingModalProps) {
+export default function BookingModal({ isOpen, onClose, propertyTitle, propertyLocation, propertyId }: BookingModalProps) {
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [date, setDate] = useState("");
@@ -29,7 +30,7 @@ export default function BookingModal({ isOpen, onClose, propertyTitle, propertyL
             Name: name,
             Phone: phone,
             Location: propertyLocation,
-            Details: `Booking for: ${propertyTitle} on ${date}`,
+            Details: `Booking for: ${propertyTitle} (ID: ${propertyId}) on ${date}`,
             Status: "New"
         };
 
@@ -52,7 +53,7 @@ export default function BookingModal({ isOpen, onClose, propertyTitle, propertyL
     };
 
     const handleWhatsAppRedirect = () => {
-        const message = `Hello, I submitted a booking request for *${propertyTitle}*.\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Date:* ${date}`;
+        const message = `Hello, I submitted a booking request for *${propertyTitle}* (ID: ${propertyId}).\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Date:* ${date}`;
         window.open(`https://wa.me/917557777987?text=${encodeURIComponent(message)}`, '_blank');
         onClose();
     };
@@ -76,6 +77,7 @@ export default function BookingModal({ isOpen, onClose, propertyTitle, propertyL
                             <CheckCircle className="w-8 h-8 text-green-600" />
                         </div>
                         <h3 className="text-2xl font-bold text-gray-900 mb-2">Request Sent!</h3>
+                        <p className="font-bold text-brand-blue mb-1">Ref ID: #{propertyId}</p>
                         <p className="text-gray-500 mb-8">We have received your details. Our team will call you shortly to confirm the time.</p>
 
                         <button
