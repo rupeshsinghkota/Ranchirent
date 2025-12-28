@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { MapPin, Bed, Bath, Ruler, CheckCircle, ArrowLeft } from "lucide-react";
 import BookingSection from "@/components/BookingSection";
 import PropertyGallery from "@/components/PropertyGallery";
@@ -35,6 +36,37 @@ const getDirectUrl = (url: string) => {
         return url;
     }
 };
+
+// Generate Dynamic Metadata
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
+    const allProperties = await getProperties();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const property = allProperties.find((p: any) => p.id == id);
+
+    if (!property) {
+        return {
+            title: "Property Not Found | RanchiRent",
+            description: "The requested property could not be found."
+        };
+    }
+
+    const title = `${property.type} for Rent in ${property.location} - ₹${Number(property.rent).toLocaleString()} | RanchiRent`;
+    const description = `Verified ${property.type} available in ${property.location}, Ranchi. Rent: ₹${Number(property.rent).toLocaleString()}. Preferred for ${property.tenantPref}. Call Owner/Broker directly.`;
+    const image = getDirectUrl(property.image ? property.image.split(",")[0] : "");
+
+    return {
+        title: title,
+        description: description,
+        openGraph: {
+            title: title,
+            description: description,
+            url: `https://ranchirent.in/property/${id}`,
+            images: image ? [{ url: image }] : [],
+            type: "article",
+        },
+    };
+}
 
 export default async function PropertyPage({ params }: { params: Promise<{ id: string }> }) {
     // Unwrap params for Next.js 15+ compatibility
