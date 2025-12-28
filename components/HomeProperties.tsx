@@ -26,7 +26,7 @@ async function getProperties() {
 
 async function PropertiesList() {
     const data = await getProperties();
-    const properties = Array.isArray(data) ? data.slice(0, 3) : [];
+    const properties = Array.isArray(data) ? data.slice(0, 8) : [];
 
     return (
         <div className="flex flex-col items-center">
