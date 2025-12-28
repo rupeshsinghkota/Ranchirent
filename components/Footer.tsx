@@ -30,14 +30,16 @@ export default function Footer() {
                         <div className="mt-8">
                             <a
                                 href="https://expo.dev/artifacts/eas/8JRvgfm6Jge46bqXkhKaAY.apk"
-                                className="inline-flex items-center gap-3 bg-gray-800 hover:bg-brand-blue border border-gray-700 hover:border-brand-blue text-white px-5 py-3 rounded-xl transition-all shadow-lg hover:shadow-brand-blue/20 group"
+                                className="inline-flex items-center gap-3 bg-black hover:bg-gray-900 border border-gray-700 hover:border-brand-blue/50 text-white px-4 py-2 rounded-xl transition-all shadow-lg hover:shadow-brand-blue/20 group w-auto transform hover:-translate-y-1"
                             >
-                                <div className="bg-gray-700 group-hover:bg-white/10 p-2 rounded-lg transition-colors">
-                                    <Download className="w-6 h-6 text-brand-blue group-hover:text-white transition-colors" />
+                                <div className="p-1">
+                                    <svg viewBox="0 0 24 24" className="w-8 h-8 fill-current text-[#3DDC84]" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0001.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4055-6.198l1.3776-2.3864c.137-.2373.0556-.5419-.1816-.6789-.2373-.1372-.5423-.056-.6796.1812l-1.3995 2.4243c-1.5039-.6866-3.2187-1.0772-5.0298-1.0772-1.8492 0-3.6.4052-5.1303 1.116l-1.3831-2.3956c-.1399-.2423-.4506-.3241-.6929-.1842-.2423.1399-.3241.4506-.1842.6929l1.3621 2.3595C2.5369 11.2351.4688 14.6593.4688 18.5721h23.0624c0-3.8344-1.9961-7.199-5.9627-9.4287" />
+                                    </svg>
                                 </div>
-                                <div className="text-left">
-                                    <div className="text-[10px] uppercase tracking-wider font-semibold text-gray-400 group-hover:text-gray-200">Download App</div>
-                                    <div className="text-sm font-bold text-white">For Android</div>
+                                <div className="text-left flex flex-col justify-center">
+                                    <div className="text-[10px] uppercase tracking-wide font-medium text-gray-400 leading-none mb-1">Download APK</div>
+                                    <div className="text-lg font-bold text-white leading-none font-sans">Android App</div>
                                 </div>
                             </a>
                         </div>
