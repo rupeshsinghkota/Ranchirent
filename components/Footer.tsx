@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin, Download } from "lucide-react";
 import { localities } from "@/data/localities";
 
 export default function Footer() {
@@ -24,6 +24,21 @@ export default function Footer() {
                             </a>
                             <a href="#" className="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all hover:scale-110">
                                 <span className="font-bold">Li</span>
+                            </a>
+                        </div>
+
+                        <div className="mt-8">
+                            <a
+                                href="https://expo.dev/artifacts/eas/8JRvgfm6Jge46bqXkhKaAY.apk"
+                                className="inline-flex items-center gap-3 bg-gray-800 hover:bg-brand-blue border border-gray-700 hover:border-brand-blue text-white px-5 py-3 rounded-xl transition-all shadow-lg hover:shadow-brand-blue/20 group"
+                            >
+                                <div className="bg-gray-700 group-hover:bg-white/10 p-2 rounded-lg transition-colors">
+                                    <Download className="w-6 h-6 text-brand-blue group-hover:text-white transition-colors" />
+                                </div>
+                                <div className="text-left">
+                                    <div className="text-[10px] uppercase tracking-wider font-semibold text-gray-400 group-hover:text-gray-200">Download App</div>
+                                    <div className="text-sm font-bold text-white">For Android</div>
+                                </div>
                             </a>
                         </div>
                     </div>
