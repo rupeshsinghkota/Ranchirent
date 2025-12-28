@@ -132,6 +132,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Owner Acquisition Section - NEW */}
+      <section className="bg-blue-600 py-16 text-white overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-50 -mr-20 -mt-20"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-600 rounded-full blur-3xl opacity-50 -ml-20 -mb-20"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+            <div className="md:w-1/2">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-blue-500/30 border border-blue-400 text-white font-bold text-xs tracking-wide mb-6 backdrop-blur-sm">
+                FOR PROPERTY OWNERS
+              </span>
+              <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">
+                Have a Flat to Rent? <br />
+                <span className="text-blue-100">Get it Listed for Free.</span>
+              </h2>
+              <p className="text-blue-100 text-lg mb-8 leading-relaxed max-w-lg">
+                Stop dealing with spam calls. We verify tenants, handle visits, and ensure you get the best market rate. Zero upfront fees.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/landlord" className="px-8 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg text-center">
+                  List Your Property
+                </Link>
+                <Link href="https://wa.me/917557777987" target="_blank" className="px-8 py-4 bg-transparent border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-5 h-5 filter brightness-0 invert" alt="WhatsApp" />
+                  WhatsApp Us
+                </Link>
+              </div>
+            </div>
+
+            {/* Visual Element */}
+            <div className="md:w-1/2 flex justify-center">
+              <div className="bg-white p-6 rounded-3xl shadow-2xl max-w-sm transform rotate-3 hover:rotate-0 transition duration-500 text-gray-900">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gray-200"></div>
+                  <div>
+                    <div className="h-3 w-24 bg-gray-200 rounded mb-1"></div>
+                    <div className="h-2 w-16 bg-gray-100 rounded"></div>
+                  </div>
+                </div>
+                <div className="h-40 bg-gray-100 rounded-xl mb-4 relative overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-300 font-bold">
+                    Your Property Here
+                  </div>
+                </div>
+                <div className="flex justify-between items-center bg-green-50 p-3 rounded-lg border border-green-100">
+                  <span className="font-bold text-green-700 text-sm">Tenant Verified</span>
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Localities Cloud */}
       <section className="bg-gray-900 py-12 md:py-20 text-white">
         <div className="container mx-auto px-4 text-center">

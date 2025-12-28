@@ -58,6 +58,21 @@ export default function LandlordPage() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Quick WhatsApp Option */}
+                    <div className="mt-8 p-6 bg-green-50 rounded-2xl border border-green-100">
+                        <h3 className="font-bold text-gray-900 text-lg mb-2">In a hurry?</h3>
+                        <p className="text-gray-600 mb-4">Skip the form. Send us photos and details on WhatsApp directly.</p>
+                        <a
+                            href="https://wa.me/917557777987?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#20bd5a] transition shadow-lg hover:shadow-green-200"
+                        >
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-5 h-5 filter brightness-0 invert" alt="WhatsApp" />
+                            List via WhatsApp
+                        </a>
+                    </div>
                 </div>
 
                 {/* Right Column: Form */}

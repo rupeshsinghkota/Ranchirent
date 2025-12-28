@@ -143,7 +143,20 @@ export default function LandlordForm() {
                 <p className="text-gray-400 text-sm mt-1">Free Listing. Verified Tenants.</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+            {/* Alternative: WhatsApp Listing */}
+            <div className="border-b border-gray-100 bg-gray-50/50 p-4 text-center">
+                <a
+                    href="https://wa.me/917557777987?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-green-600 hover:text-green-700 flex items-center justify-center gap-2"
+                >
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-4 h-4" alt="WA" />
+                    Prefer sending details on WhatsApp? Click here
+                </a>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6 pt-6">
 
                 {/* 1. Owner Details */}
                 <div className="space-y-4">
