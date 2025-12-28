@@ -2,7 +2,7 @@ import { CheckCircle } from "lucide-react";
 import LandlordForm from "@/components/LandlordForm";
 
 export const metadata = {
-    title: "List Your Property | RanchiRent",
+    title: "List Your Flat for Rent in Ranchi | Free Owner Listing | RanchiRent",
     description: "Landlords/Owners: List your flat for rent in Ranchi for free.",
 };
 

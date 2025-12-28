@@ -193,6 +193,50 @@ export default function Home() {
       </section>
 
       <HomeSeoContent />
+
+      {/* JSON-LD Schema for Organization */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "RealEstateAgent",
+            "name": "RanchiRent",
+            "image": "https://ranchirent.in/icon.png",
+            "url": "https://ranchirent.in",
+            "telephone": "+917557777987",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Circular Road, Lalpur",
+              "addressLocality": "Ranchi",
+              "postalCode": "834001",
+              "addressCountry": "IN"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 23.3441,
+              "longitude": 85.3096
+            },
+            "openingHoursSpecification": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+              ],
+              "opens": "09:00",
+              "closes": "19:00"
+            },
+            "sameAs": [
+              "https://www.instagram.com/ranchirent/",
+              "https://www.facebook.com/profile.php?id=61585765550042"
+            ]
+          })
+        }}
+      />
     </main>
   );
 }

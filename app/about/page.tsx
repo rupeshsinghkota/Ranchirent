@@ -1,7 +1,7 @@
 import { ShieldCheck, Users, Zap } from "lucide-react";
 
 export const metadata = {
-    title: "About Us | RanchiRent",
+    title: "About RanchiRent | Trusted No-Fake-Listing Brokerage in Ranchi",
     description: "Learn about RanchiRent, the most trusted rental platform in Ranchi.",
 };
 

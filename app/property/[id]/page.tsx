@@ -239,6 +239,33 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
                     <SimilarProperties properties={similarProperties} />
                 </div>
             )}
+
+            {/* JSON-LD Schema for Real Estate Listing */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Product",
+                        "name": property.title,
+                        "image": images.length > 0 ? images : ["https://ranchirent.in/property-placeholder.png"],
+                        "description": property.description,
+                        "brand": {
+                            "@type": "Brand",
+                            "name": "RanchiRent"
+                        },
+                        "offers": {
+                            "@type": "Offer",
+                            "url": `https://ranchirent.in/property/${property.id}`,
+                            "priceCurrency": "INR",
+                            "price": rawProperty.rent,
+                            "priceValidUntil": "2025-12-31",
+                            "availability": "https://schema.org/InStock",
+                            "itemCondition": "https://schema.org/NewCondition"
+                        }
+                    })
+                }}
+            />
         </main>
     );
 }
