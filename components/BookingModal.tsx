@@ -18,6 +18,22 @@ export default function BookingModal({ isOpen, onClose, propertyTitle, propertyL
     const [phone, setPhone] = useState("");
     const [date, setDate] = useState("");
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
+    const generateDates = () => {
+        const dates = [];
+        const today = new Date();
+        for (let i = 0; i < 14; i++) {
+            const d = new Date(today);
+            d.setDate(today.getDate() + i);
+            dates.push({
+                day: d.toLocaleDateString('en-US', { weekday: 'short' }),
+                date: d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
+                full: d.toLocaleDateString('en-GB') // DD/MM/YYYY - Matching Mobile Format
+            });
+        }
+        return dates;
+    };
 
     if (!isOpen) return null;
 
@@ -131,13 +147,37 @@ export default function BookingModal({ isOpen, onClose, propertyTitle, propertyL
                                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Preferred Date</label>
                                 <div className="relative">
                                     <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                                    <input
-                                        type="date"
-                                        required
-                                        value={date}
-                                        onChange={(e) => setDate(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition bg-white text-gray-900"
-                                    />
+                                    <div
+                                        onClick={() => setShowDatePicker(!showDatePicker)}
+                                        className={`w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 cursor-pointer flex items-center justify-between transition bg-white ${showDatePicker ? 'ring-2 ring-blue-100 border-blue-500' : 'hover:border-gray-300'}`}
+                                    >
+                                        <span className={date ? "text-gray-900" : "text-gray-400"}>
+                                            {date || "Select a Date"}
+                                        </span>
+                                    </div>
+
+                                    {/* Smart Date Picker List Overlay */}
+                                    {showDatePicker && (
+                                        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 max-h-60 overflow-y-auto">
+                                            <div className="sticky top-0 bg-gray-50 border-b border-gray-100 px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                                Select Date (Next 14 Days)
+                                            </div>
+                                            {generateDates().map((item, index) => (
+                                                <button
+                                                    key={index}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setDate(item.full);
+                                                        setShowDatePicker(false);
+                                                    }}
+                                                    className="w-full text-left px-4 py-3 hover:bg-brand-blue/5 border-b border-gray-50 last:border-0 flex items-center justify-between group transition-colors"
+                                                >
+                                                    <span className="text-gray-500 font-medium group-hover:text-brand-blue">{item.day}</span>
+                                                    <span className="text-gray-900 font-bold group-hover:text-brand-blue">{item.date}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
