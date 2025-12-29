@@ -2,7 +2,7 @@
 
 import { localities } from "@/data/localities";
 import { useState } from "react";
-import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Check } from "lucide-react";
+import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Check, Video, X } from "lucide-react";
 
 // The MAIN Property Database Script (Same as Admin)
 const PROPERTY_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykc3VpXhn8FDcRFWYcbmEW9QINOyYwuIcoP9ILTDZS8gZY8u8DP4oj69TdGIp9lzJ4/exec";
@@ -11,6 +11,9 @@ export default function LandlordForm() {
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
     const [files, setFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
+    const [videoFile, setVideoFile] = useState<File | null>(null);
+    const [videoPreview, setVideoPreview] = useState<string>("");
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     const [formData, setFormData] = useState({
         owner: "",
@@ -50,6 +53,54 @@ export default function LandlordForm() {
         setPreviews(prev => prev.filter((_, i) => i !== index));
     };
 
+    // Video Handling
+    const handleVideo = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            if (file.size > 100 * 1024 * 1024) { // 100MB limit
+                alert("Video must be under 100MB");
+                return;
+            }
+            setVideoFile(file);
+            setVideoPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const removeVideo = () => {
+        setVideoFile(null);
+        setVideoPreview("");
+    };
+
+    // Upload video to Google Drive via Apps Script
+    const uploadVideoToDrive = async (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = async () => {
+                try {
+                    const base64 = (reader.result as string).split(",")[1];
+                    // Send to Apps Script
+                    await fetch(PROPERTY_SCRIPT_URL + "?action=uploadVideo", {
+                        method: "POST",
+                        mode: "no-cors",
+                        body: JSON.stringify({
+                            action: "uploadVideo",
+                            fileName: file.name,
+                            mimeType: file.type,
+                            data: base64
+                        })
+                    });
+                    // With no-cors we can't read response directly
+                    // The script will save video and return URL in property data
+                    resolve("video_uploaded");
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            reader.onerror = () => reject(new Error("Failed to read file"));
+            reader.readAsDataURL(file);
+        });
+    };
+
     // ImgBB Upload
     const uploadToImgBB = async (file: File) => {
         const formData = new FormData();
@@ -72,7 +123,13 @@ export default function LandlordForm() {
             // 1. Upload Images
             const imageUrls = await Promise.all(files.map(uploadToImgBB));
 
-            // 2. Prepare Payload for Main Database
+            // 2. Upload Video (if any)
+            let videoUrl = "";
+            if (videoFile) {
+                videoUrl = await uploadVideoToDrive(videoFile);
+            }
+
+            // 3. Prepare Payload for Main Database
             const payload = {
                 owner: formData.owner,
                 phone: formData.phone,
@@ -84,8 +141,8 @@ export default function LandlordForm() {
                 furnishing: formData.furnishing,
                 tenantPref: formData.tenantPref.join(", "),
                 amenities: formData.amenities.join(", "),
-                images: imageUrls, // Array of URLs
-                // Status defaults to whatever the sheet script sets (usually new row)
+                images: imageUrls,
+                video: videoUrl, // Video URL
             };
 
             // 3. Submit
@@ -103,6 +160,8 @@ export default function LandlordForm() {
             });
             setFiles([]);
             setPreviews([]);
+            setVideoFile(null);
+            setVideoPreview("");
 
             // Track Facebook Pixel Conversion (Standard Event)
             if (typeof window !== 'undefined' && (window as any).fbq) {
@@ -286,6 +345,35 @@ export default function LandlordForm() {
                             <input type="file" multiple accept="image/*" className="hidden" onChange={handleFile} />
                         </label>
                     </div>
+                </div>
+
+                {/* 6. Video */}
+                <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Video (Optional)</h4>
+                    {videoPreview ? (
+                        <div className="relative">
+                            <video src={videoPreview} controls className="w-full rounded-xl border border-gray-200" />
+                            <button
+                                type="button"
+                                onClick={removeVideo}
+                                className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+                    ) : (
+                        <label className="flex flex-col items-center justify-center p-8 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-100 transition">
+                            <Video className="w-10 h-10 text-gray-400 mb-2" />
+                            <span className="text-sm font-medium text-gray-600">Add Property Video</span>
+                            <span className="text-xs text-gray-400 mt-1">MP4, MOV, WEBM (Max 100MB)</span>
+                            <input
+                                type="file"
+                                accept="video/mp4,video/quicktime,video/webm"
+                                className="hidden"
+                                onChange={handleVideo}
+                            />
+                        </label>
+                    )}
                 </div>
 
                 {/* Submit Button */}
