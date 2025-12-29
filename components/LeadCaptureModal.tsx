@@ -23,7 +23,7 @@ export default function LeadCaptureModal({ isOpen, onClose }: LeadCaptureModalPr
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
             <div
                 className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200 relative"
                 onClick={(e) => e.stopPropagation()}
@@ -39,7 +39,7 @@ export default function LeadCaptureModal({ isOpen, onClose }: LeadCaptureModalPr
 
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition text-white backdrop-blur-sm"
+                        className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition text-white backdrop-blur-sm z-50"
                     >
                         <X className="w-5 h-5" />
                     </button>
