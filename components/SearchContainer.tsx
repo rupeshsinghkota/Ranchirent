@@ -9,7 +9,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import LocalitySeoContent from "@/components/LocalitySeoContent";
 import { Property } from "@/data/properties"; // Keep interface, remove static data usage
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
+import LeadCaptureModal from "@/components/LeadCaptureModal";
 
 // ✅ THE NEW FRESH START URL
 // The new deployment URL
@@ -28,6 +29,7 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
 
     const [properties, setProperties] = useState<Property[]>(initialProperties);
     const [loading, setLoading] = useState(initialProperties.length === 0);
+    const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
 
     // Update filters if URL params change
     // Update filters if URL params change
@@ -200,6 +202,17 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
                     </div>
                 </div>
 
+                {/* Floating "Post Requirement" Button (Mobile/Tablet) */}
+                <div className="fixed bottom-6 right-6 z-40 md:hidden">
+                    <button
+                        onClick={() => setIsLeadModalOpen(true)}
+                        className="bg-gray-900 text-white p-4 rounded-full shadow-2xl flex items-center gap-2 font-bold animate-in zoom-in slide-in-from-bottom-4"
+                    >
+                        <span className="text-sm">Post Requirement</span>
+                        <ArrowRight className="w-4 h-4" />
+                    </button>
+                </div>
+
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -207,7 +220,25 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
                         ))}
                     </div>
                 ) : (
-                    <PropertyGrid properties={filteredProperties} />
+                    <>
+                        <PropertyGrid properties={filteredProperties} />
+
+                        {/* End of List CTA */}
+                        <div className="mt-12 bg-blue-50 rounded-2xl p-8 md:p-12 text-center border border-blue-100">
+                            <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">
+                                Still looking for the perfect home?
+                            </h3>
+                            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                                Don&apos;t settle. Tell us exactly what you need, and we&apos;ll find it for you personally.
+                            </p>
+                            <button
+                                onClick={() => setIsLeadModalOpen(true)}
+                                className="bg-brand-blue hover:bg-blue-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+                            >
+                                Post Your Requirement
+                            </button>
+                        </div>
+                    </>
                 )}
 
                 {/* Dynamic SEO Content (Only if locality is selected) */}
@@ -236,6 +267,8 @@ function SearchContent({ initialProperties = [] }: SearchContentProps) {
                     </div>
                 </div>
             </div>
+
+            <LeadCaptureModal isOpen={isLeadModalOpen} onClose={() => setIsLeadModalOpen(false)} />
         </div>
     );
 }
