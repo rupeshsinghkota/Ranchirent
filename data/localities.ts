@@ -17,6 +17,7 @@ export const localities = [
     "Kadru",
     "Kanke Road",
     "Kantatoli",
+    "Katahal More",
     "Kokar",
     "Krishnapuri",
     "Lalpur",
