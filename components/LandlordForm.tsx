@@ -38,10 +38,7 @@ export default function LandlordForm() {
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newFiles = Array.from(e.target.files);
-            if (files.length + newFiles.length > 5) {
-                alert("Maximum 5 images allowed");
-                return;
-            }
+            // Limit check removed for unlimited uploads
             const validFiles = newFiles.filter(f => f.size < 4 * 1024 * 1024); // 4MB limit
             setFiles(prev => [...prev, ...validFiles]);
             setPreviews(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
@@ -275,7 +272,7 @@ export default function LandlordForm() {
 
                 {/* 5. Photos */}
                 <div className="space-y-4">
-                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Photos (Max 5)</h4>
+                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Photos</h4>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                         {previews.map((src, i) => (
                             <div key={i} className="relative aspect-square">
@@ -283,13 +280,11 @@ export default function LandlordForm() {
                                 <button type="button" onClick={() => removeFile(i)} className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">✕</button>
                             </div>
                         ))}
-                        {files.length < 5 && (
-                            <label className="aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition">
-                                <Camera className="w-6 h-6 text-gray-400" />
-                                <span className="text-[10px] text-gray-500 mt-1">Add Photo</span>
-                                <input type="file" multiple accept="image/*" className="hidden" onChange={handleFile} />
-                            </label>
-                        )}
+                        <label className="aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition">
+                            <Camera className="w-6 h-6 text-gray-400" />
+                            <span className="text-[10px] text-gray-500 mt-1">Add Photo</span>
+                            <input type="file" multiple accept="image/*" className="hidden" onChange={handleFile} />
+                        </label>
                     </div>
                 </div>
 

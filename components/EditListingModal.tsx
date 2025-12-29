@@ -57,11 +57,7 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newFiles = Array.from(e.target.files);
-            const totalImages = existingImages.length + files.length + newFiles.length;
-            if (totalImages > 5) {
-                alert("Maximum 5 images allowed");
-                return;
-            }
+            // Limit check removed
             const validFiles = newFiles.filter(f => f.size < 4 * 1024 * 1024); // 4MB limit
             setFiles(prev => [...prev, ...validFiles]);
             setPreviews(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
@@ -286,7 +282,7 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
 
                     {/* Images */}
                     <div className="space-y-4">
-                        <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Images (Max 5)</h3>
+                        <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Images</h3>
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                             {/* Existing Images */}
                             {existingImages.map((src, i) => (
@@ -325,13 +321,11 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
                             ))}
 
                             {/* Upload Button */}
-                            {(existingImages.length + files.length) < 5 && (
-                                <label className="aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition">
-                                    <Camera className="w-6 h-6 text-gray-400" />
-                                    <span className="text-[10px] text-gray-500 mt-1">Add Photo</span>
-                                    <input type="file" multiple accept="image/*" className="hidden" onChange={handleFile} />
-                                </label>
-                            )}
+                            <label className="aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-gray-100 transition">
+                                <Camera className="w-6 h-6 text-gray-400" />
+                                <span className="text-[10px] text-gray-500 mt-1">Add Photo</span>
+                                <input type="file" multiple accept="image/*" className="hidden" onChange={handleFile} />
+                            </label>
                         </div>
                     </div>
 
