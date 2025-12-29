@@ -205,6 +205,38 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
                         <p className="text-gray-600 leading-relaxed text-sm sm:text-lg">{property.description}</p>
                     </div>
 
+                    {/* Property Video */}
+                    {rawProperty.video && (
+                        <div className="px-5 sm:px-0 order-5 relative z-10 bg-white">
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Property Video</h3>
+                            <div className="aspect-video rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                                {rawProperty.video.includes('youtube.com') || rawProperty.video.includes('youtu.be') ? (
+                                    <iframe
+                                        src={rawProperty.video
+                                            .replace('watch?v=', 'embed/')
+                                            .replace('youtu.be/', 'www.youtube.com/embed/')
+                                            .replace('/shorts/', '/embed/')
+                                            .split('?')[0]}
+                                        title="Property Video"
+                                        className="w-full h-full"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    />
+                                ) : rawProperty.video.includes('drive.google.com') ? (
+                                    <iframe
+                                        src={rawProperty.video.replace('/view', '/preview')}
+                                        title="Property Video"
+                                        className="w-full h-full"
+                                        allow="autoplay"
+                                        allowFullScreen
+                                    />
+                                ) : (
+                                    <video src={rawProperty.video} controls className="w-full h-full" />
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Amenities */}
                     <div className="px-5 sm:px-0 order-5 relative z-10 bg-white">
                         <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Amenities</h3>
