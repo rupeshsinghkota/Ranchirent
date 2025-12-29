@@ -5,7 +5,7 @@ import { useState } from "react";
 import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Check, Video, X } from "lucide-react";
 
 // The MAIN Property Database Script (Same as Admin)
-const PROPERTY_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykc3VpXhn8FDcRFWYcbmEW9QINOyYwuIcoP9ILTDZS8gZY8u8DP4oj69TdGIp9lzJ4/exec";
+const PROPERTY_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLAG4AvsxJvex5a_wBP_EkF1PoL46p41g67SCnxQ2H5h-TeXc4omr9qZxFCU2YGUPh/exec";
 
 export default function LandlordForm() {
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
