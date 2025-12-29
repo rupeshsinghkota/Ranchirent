@@ -107,9 +107,9 @@ export default function LandlordForm() {
             setFiles([]);
             setPreviews([]);
 
-            // Track Pixel
+            // Track Facebook Pixel Conversion (Standard Event)
             if (typeof window !== 'undefined' && (window as any).fbq) {
-                (window as any).fbq('track', 'ListingSubmitted');
+                (window as any).fbq('track', 'SubmitApplication');
             }
 
         } catch (error) {
@@ -149,6 +149,11 @@ export default function LandlordForm() {
                     href="https://wa.me/917557777987?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => {
+                        if (typeof window !== 'undefined' && (window as any).fbq) {
+                            (window as any).fbq('track', 'Lead');
+                        }
+                    }}
                     className="text-sm font-semibold text-green-600 hover:text-green-700 flex items-center justify-center gap-2"
                 >
                     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-4 h-4" alt="WA" />
