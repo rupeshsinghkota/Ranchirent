@@ -14,7 +14,7 @@ import LeadCaptureModal from "@/components/LeadCaptureModal";
 
 // ✅ THE NEW FRESH START URL
 // The new deployment URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5tGALPIeCtVQURHSbRoob6R9ZM1Blj8SJwbmuqWGpwnlzbfSY6XsEO1l7uFklzm3a/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzI5WNYtNecLvSDpPl0wavFIUj4jhTyeOYHXqRkJxrCfTxUEfURvWN4LfGY_BRUha31/exec";
 
 interface SearchContentProps {
     initialProperties?: Property[];

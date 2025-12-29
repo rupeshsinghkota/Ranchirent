@@ -7,7 +7,7 @@ import LocalitySeoContent from "@/components/LocalitySeoContent";
 
 // Helper to Fetch Data with Cache & Timeout (Reused Pattern)
 async function getProperties() {
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5tGALPIeCtVQURHSbRoob6R9ZM1Blj8SJwbmuqWGpwnlzbfSY6XsEO1l7uFklzm3a/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzI5WNYtNecLvSDpPl0wavFIUj4jhTyeOYHXqRkJxrCfTxUEfURvWN4LfGY_BRUha31/exec";
 
     try {
         const fetchPromise = fetch(SCRIPT_URL, { next: { revalidate: 120 } });
