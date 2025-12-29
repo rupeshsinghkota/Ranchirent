@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://ranchirent.in"),
   title: "RanchiRent.in | Verified Flats for Rent in Ranchi",
   description: "Find verified 1 BHK, 2 BHK, 3 BHK flats for rent in Ranchi directly from owners/brokers. No fake listings. Call now.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
+  },
   openGraph: {
     title: "verified Flats for Rent in Ranchi | RanchiRent",
     description: "Browse 500+ verified rental properties in Ranchi. Direct owner contacts, no spam.",
