@@ -8,7 +8,7 @@ import SimilarProperties from "@/components/SimilarProperties";
 
 // Server-side Fetch with Cache (60s)
 async function getProperties() {
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLAG4AvsxJvex5a_wBP_EkF1PoL46p41g67SCnxQ2H5h-TeXc4omr9qZxFCU2YGUPh/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5tGALPIeCtVQURHSbRoob6R9ZM1Blj8SJwbmuqWGpwnlzbfSY6XsEO1l7uFklzm3a/exec";
     try {
         const res = await fetch(SCRIPT_URL, { next: { revalidate: 60 } });
         if (!res.ok) throw new Error("Failed to fetch");

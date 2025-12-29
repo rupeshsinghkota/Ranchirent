@@ -10,7 +10,7 @@ interface EditListingModalProps {
     onSuccess: () => void;
 }
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzLAG4AvsxJvex5a_wBP_EkF1PoL46p41g67SCnxQ2H5h-TeXc4omr9qZxFCU2YGUPh/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5tGALPIeCtVQURHSbRoob6R9ZM1Blj8SJwbmuqWGpwnlzbfSY6XsEO1l7uFklzm3a/exec";
 
 export default function EditListingModal({ property, onClose, onSuccess }: EditListingModalProps) {
     const [files, setFiles] = useState<File[]>([]);
@@ -29,9 +29,7 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
         amenities: ""
     });
     const [saving, setSaving] = useState(false);
-    const [videoFile, setVideoFile] = useState<File | null>(null);
-    const [videoPreview, setVideoPreview] = useState<string>("");
-    const [existingVideo, setExistingVideo] = useState<string>("");
+    const [videoLink, setVideoLink] = useState("");
 
     useEffect(() => {
         if (property) {
@@ -49,14 +47,15 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
             });
 
             // Parse existing images
+            // Parse existing images
             if (property.image && typeof property.image === 'string') {
                 const imageUrls = property.image.split(',').map((url: string) => url.trim()).filter((url: string) => url);
                 setExistingImages(imageUrls);
             }
 
-            // Set existing video
+            // Set existing video link
             if (property.video) {
-                setExistingVideo(property.video);
+                setVideoLink(property.video);
             }
         }
     }, [property]);
@@ -94,53 +93,6 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
         throw new Error("Image Upload Failed");
     };
 
-    // Video Handling
-    const handleVideo = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            if (file.size > 100 * 1024 * 1024) {
-                alert("Video must be under 100MB");
-                return;
-            }
-            setVideoFile(file);
-            setVideoPreview(URL.createObjectURL(file));
-            setExistingVideo(""); // Clear existing video when new one is selected
-        }
-    };
-
-    const removeVideo = () => {
-        setVideoFile(null);
-        setVideoPreview("");
-        setExistingVideo("");
-    };
-
-    // Upload video to Google Drive via Apps Script
-    const uploadVideoToDrive = async (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = async () => {
-                try {
-                    const base64 = (reader.result as string).split(",")[1];
-                    await fetch(SCRIPT_URL + "?action=uploadVideo", {
-                        method: "POST",
-                        mode: "no-cors",
-                        body: JSON.stringify({
-                            action: "uploadVideo",
-                            fileName: file.name,
-                            mimeType: file.type,
-                            data: base64
-                        })
-                    });
-                    resolve("video_uploaded");
-                } catch (error) {
-                    reject(error);
-                }
-            };
-            reader.onerror = () => reject(new Error("Failed to read file"));
-            reader.readAsDataURL(file);
-        });
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
@@ -166,7 +118,7 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
                 tenantPref: formData.tenantPref,
                 amenities: formData.amenities,
                 images: allImageUrls,
-                video: videoFile ? await uploadVideoToDrive(videoFile) : existingVideo
+                video: videoLink // Simple link
             };
 
             await fetch(SCRIPT_URL, {
@@ -387,40 +339,18 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
 
                     {/* Property Video */}
                     <div className="space-y-4">
-                        <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Video (Optional)</h3>
-                        {videoPreview || existingVideo ? (
-                            <div className="relative">
-                                <video
-                                    src={videoPreview || existingVideo}
-                                    controls
-                                    className="w-full rounded-xl border border-gray-200"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={removeVideo}
-                                    className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition"
-                                >
-                                    <X className="w-4 h-4" />
-                                </button>
-                                {existingVideo && !videoPreview && (
-                                    <div className="absolute bottom-2 left-2 bg-blue-500 text-white px-2 py-1 rounded text-xs font-bold">
-                                        EXISTING
-                                    </div>
-                                )}
-                            </div>
-                        ) : (
-                            <label className="flex flex-col items-center justify-center p-6 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-100 transition">
-                                <Video className="w-8 h-8 text-gray-400 mb-2" />
-                                <span className="text-sm font-medium text-gray-600">Add Property Video</span>
-                                <span className="text-xs text-gray-400 mt-1">MP4, MOV, WEBM (Max 100MB)</span>
-                                <input
-                                    type="file"
-                                    accept="video/mp4,video/quicktime,video/webm"
-                                    className="hidden"
-                                    onChange={handleVideo}
-                                />
-                            </label>
-                        )}
+                        <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Video Link (Optional)</h3>
+                        <div className="relative">
+                            <Video className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                            <input
+                                type="url"
+                                placeholder="Paste YouTube or Google Drive video link"
+                                className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
+                                value={videoLink}
+                                onChange={e => setVideoLink(e.target.value)}
+                            />
+                        </div>
+                        <p className="text-xs text-gray-400">Upload video to YouTube (unlisted) or Google Drive and paste the link here</p>
                     </div>
 
                     {/* Actions */}
