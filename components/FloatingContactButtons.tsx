@@ -14,6 +14,18 @@ export default function FloatingContactButtons() {
     // URL Encode the message
     const encodedMessage = encodeURIComponent(whatsappMessage);
 
+    const handleCallClick = () => {
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+            (window as any).fbq('track', 'Contact');
+        }
+    };
+
+    const handleWhatsAppClick = () => {
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+            (window as any).fbq('track', 'Lead');
+        }
+    };
+
     // Optional: Hide on specific pages if needed
     if (pathname && pathname.includes('/admin')) return null;
 
@@ -22,6 +34,7 @@ export default function FloatingContactButtons() {
             <div className="grid grid-cols-2 gap-3">
                 <a
                     href="tel:+917557777987"
+                    onClick={handleCallClick}
                     className="flex items-center justify-center gap-2 bg-gray-900 text-white font-bold py-3 rounded-xl shadow-sm hover:bg-gray-800 active:scale-95 transition-all text-sm"
                 >
                     <Phone className="w-4 h-4" />
@@ -31,6 +44,7 @@ export default function FloatingContactButtons() {
                     href={`https://wa.me/917557777987?text=${encodedMessage}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={handleWhatsAppClick}
                     className="flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold py-3 rounded-xl shadow-sm hover:bg-[#128C7E] active:scale-95 transition-all text-sm"
                 >
                     <MessageCircle className="w-4 h-4" />

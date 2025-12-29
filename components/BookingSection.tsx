@@ -14,6 +14,13 @@ interface BookingSectionProps {
 export default function BookingSection({ propertyTitle, propertyLocation, propertyPrice, propertyId }: BookingSectionProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const handleWhatsAppClick = () => {
+        // Track WhatsApp clicks as Leads
+        if (typeof window !== 'undefined' && (window as any).fbq) {
+            (window as any).fbq('track', 'Lead');
+        }
+    };
+
     return (
         <>
             {/* Desktop Sticky Sidebar */}
@@ -33,6 +40,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
                         href={`https://wa.me/917557777987?text=Hi, I saw ${propertyTitle} (ID: ${propertyId}) in ${propertyLocation} on RanchiRent.in. Need more info.`}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={handleWhatsAppClick}
                         className="flex items-center justify-center gap-2 w-full rounded-xl border border-gray-200 bg-white py-3.5 text-base font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition"
                     >
                         <span className="w-5 h-5 flex items-center justify-center rounded-full bg-green-100 text-green-600"><Phone className="w-3 h-3 fill-current" /></span>
@@ -57,6 +65,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
                     href={`https://wa.me/917557777987?text=Hi, I saw ${propertyTitle} in ${propertyLocation} on RanchiRent.in. Need more info.`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={handleWhatsAppClick}
                     className="flex-1 flex flex-col items-center justify-center gap-1 rounded-xl border border-gray-200 bg-gray-50 py-2.5 text-sm font-bold text-gray-700 active:scale-95 transition"
                 >
                     <span className="text-xs font-normal text-gray-500">More Info</span>

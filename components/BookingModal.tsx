@@ -60,6 +60,11 @@ export default function BookingModal({ isOpen, onClose, propertyTitle, propertyL
                 body: JSON.stringify(formData),
             });
 
+            // Track Facebook Pixel Conversion
+            if (typeof window !== 'undefined' && (window as any).fbq) {
+                (window as any).fbq('track', 'Schedule');
+            }
+
             setStatus("success");
             // Optional: Reset form after success delay or keep success state
         } catch (error) {

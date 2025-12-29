@@ -33,6 +33,12 @@ export default function ContactForm() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
+
+            // Track Facebook Pixel Conversion
+            if (typeof window !== 'undefined' && (window as any).fbq) {
+                (window as any).fbq('track', 'Contact');
+            }
+
             setStatus("success");
         } catch (error) {
             console.error("Error submitting form", error);
