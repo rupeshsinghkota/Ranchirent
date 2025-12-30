@@ -33,6 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/listings',
         '/contact',
         '/landlord',
+        '/agent',
         '/privacy',
         '/terms',
     ].map((route) => ({
