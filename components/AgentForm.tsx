@@ -39,6 +39,18 @@ export default function AgentForm() {
         });
     };
 
+    // Get amenities based on property type
+    const getAmenitiesByType = (type: string) => {
+        if (type === "PG/Hostel") {
+            return ["WiFi", "Meals Included", "Laundry", "Power Backup", "Attached Bathroom", "AC", "Geyser", "RO Water", "CCTV", "Security", "Parking", "TV"];
+        }
+        if (type === "Shop/Office") {
+            return ["Parking", "Power Backup", "AC", "CCTV", "Lift", "Security", "WiFi", "Main Road Facing", "Western Toilet", "RO Water"];
+        }
+        // Default for Flats/Houses
+        return ["Parking", "Lift", "Power Backup", "WiFi", "Security", "Western Toilet", "Geyser", "AC", "RO Water", "Balcony", "Modular Kitchen", "Washing Machine", "Fridge", "TV", "CCTV", "Garden"];
+    };
+
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newFiles = Array.from(e.target.files);
@@ -275,7 +287,7 @@ export default function AgentForm() {
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Amenities</label>
                         <div className="flex flex-wrap gap-2">
-                            {["Parking", "Lift", "Power Backup", "WiFi", "Security", "Western Toilet", "Geyser", "AC", "RO Water", "Balcony", "Modular Kitchen", "Washing Machine", "Fridge", "TV", "CCTV", "Garden", "Meals Included", "Laundry", "Attached Bathroom", "Main Road Facing"].map(tag => (
+                            {getAmenitiesByType(formData.type).map(tag => (
                                 <button type="button" key={tag} onClick={() => toggleSelection("amenities", tag)}
                                     className={`px-3 py-1 text-xs font-medium rounded-full border transition ${formData.amenities.includes(tag) ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"}`}>
                                     {tag}
