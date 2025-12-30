@@ -232,7 +232,7 @@ export default function AgentForm() {
                             <select required className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
                                 value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
                                 <option value="">Select Type</option>
-                                {["1 RK", "1 BHK", "2 BHK", "3 BHK", "Independent House"].map(t => <option key={t} value={t}>{t}</option>)}
+                                {["1 RK", "1 BHK", "2 BHK", "3 BHK", "Independent House", "PG/Hostel", "Shop/Office"].map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
                         </div>
                         <div>
@@ -275,7 +275,7 @@ export default function AgentForm() {
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Amenities</label>
                         <div className="flex flex-wrap gap-2">
-                            {["Parking", "Lift", "Power Backup", "WiFi", "Security", "Western Toilet", "Geyser", "AC", "RO Water", "Balcony", "Modular Kitchen", "Washing Machine", "Fridge", "TV", "CCTV", "Garden"].map(tag => (
+                            {["Parking", "Lift", "Power Backup", "WiFi", "Security", "Western Toilet", "Geyser", "AC", "RO Water", "Balcony", "Modular Kitchen", "Washing Machine", "Fridge", "TV", "CCTV", "Garden", "Meals Included", "Laundry", "Attached Bathroom", "Main Road Facing"].map(tag => (
                                 <button type="button" key={tag} onClick={() => toggleSelection("amenities", tag)}
                                     className={`px-3 py-1 text-xs font-medium rounded-full border transition ${formData.amenities.includes(tag) ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"}`}>
                                     {tag}
