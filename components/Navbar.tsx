@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Phone, Menu, X, Home, Building2, ChevronDown, MapPin } from "lucide-react";
+import { Phone, Menu, X, Home, Building2, ChevronDown, MapPin, UserCheck } from "lucide-react";
 import { localities } from "@/data/localities";
 
 export default function Navbar() {
@@ -73,6 +73,10 @@ export default function Navbar() {
 
                 {/* Desktop Actions */}
                 <div className="hidden md:flex items-center gap-5">
+                    <Link href="/agent" className="text-sm font-semibold text-green-600 hover:text-green-700 transition flex items-center gap-2">
+                        <UserCheck className="h-4 w-4" />
+                        Become Agent
+                    </Link>
                     <Link href="/landlord" className="text-sm font-semibold text-gray-600 hover:text-blue-600 transition flex items-center gap-2">
                         <Building2 className="h-4 w-4" />
                         List Property
@@ -133,6 +137,7 @@ export default function Navbar() {
                     <MobileLink href="/contact" onClick={() => setIsMenuOpen(false)} active={isActive('/contact')}>Contact</MobileLink>
                     <hr className="border-gray-100 my-2" />
                     <MobileLink href="/landlord" onClick={() => setIsMenuOpen(false)} active={isActive('/landlord')}>List Your Property</MobileLink>
+                    <MobileLink href="/agent" onClick={() => setIsMenuOpen(false)} active={isActive('/agent')}>💰 Become Agent</MobileLink>
                     <a href="tel:+917557777987" className="flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-bold mt-2 shadow-md active:scale-95 transition">
                         <Phone className="h-4 w-4" /> Call Now
                     </a>
