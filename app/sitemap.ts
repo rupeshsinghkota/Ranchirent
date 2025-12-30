@@ -22,49 +22,114 @@ async function getProperties() {
     }
 }
 
+// Helper to get first valid image URL
+function getFirstImage(imageStr: string | null): string | null {
+    if (!imageStr) return null;
+    const firstImg = imageStr.split(',')[0]?.trim();
+    if (!firstImg || firstImg === 'No Image') return null;
+
+    // Convert Drive URLs to direct image
+    if (firstImg.includes('drive.google.com') && firstImg.includes('/d/')) {
+        const match = firstImg.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (match?.[1]) {
+            return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
+        }
+    }
+    return firstImg;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://ranchirent.in';
     const allProperties = await getProperties();
+    const today = new Date();
 
-    // Static Routes
-    const staticRoutes = [
-        '',
-        '/about',
-        '/listings',
-        '/contact',
-        '/landlord',
-        '/agent',
-        '/privacy',
-        '/terms',
-    ].map((route) => ({
-        url: `${baseUrl}${route}`,
-        lastModified: new Date(),
-        changeFrequency: 'daily' as const,
-        priority: route === '' ? 1 : 0.8,
-    }));
+    // Static Routes with proper priorities
+    const staticRoutes: MetadataRoute.Sitemap = [
+        {
+            url: baseUrl,
+            lastModified: today,
+            changeFrequency: 'daily',
+            priority: 1.0,
+        },
+        {
+            url: `${baseUrl}/listings`,
+            lastModified: today,
+            changeFrequency: 'daily',
+            priority: 0.95,
+        },
+        {
+            url: `${baseUrl}/landlord`,
+            lastModified: today,
+            changeFrequency: 'weekly',
+            priority: 0.9,
+        },
+        {
+            url: `${baseUrl}/agent`,
+            lastModified: today,
+            changeFrequency: 'weekly',
+            priority: 0.9,
+        },
+        {
+            url: `${baseUrl}/about`,
+            lastModified: today,
+            changeFrequency: 'monthly',
+            priority: 0.6,
+        },
+        {
+            url: `${baseUrl}/contact`,
+            lastModified: today,
+            changeFrequency: 'monthly',
+            priority: 0.6,
+        },
+        {
+            url: `${baseUrl}/privacy`,
+            lastModified: today,
+            changeFrequency: 'yearly',
+            priority: 0.3,
+        },
+        {
+            url: `${baseUrl}/terms`,
+            lastModified: today,
+            changeFrequency: 'yearly',
+            priority: 0.3,
+        },
+    ];
 
-    // Locality Routes
-    const localityRoutes = localities.map((locality) => ({
+    // Locality Routes - High priority for SEO
+    const localityRoutes: MetadataRoute.Sitemap = localities.map((locality) => ({
         url: `${baseUrl}/rent/${locality.toLowerCase().replace(/ /g, '-')}`,
-        lastModified: new Date(),
-        changeFrequency: 'daily' as const,
+        lastModified: today,
+        changeFrequency: 'daily',
         priority: 0.9,
     }));
 
-    // Property Routes (REAL Data with SEO-friendly slugs)
-    const propertyRoutes = Array.isArray(allProperties) ? allProperties.map((property: any) => {
-        // Generate SEO slug: id-type-location
-        const typeSlug = (property.type || '').toLowerCase().replace(/\s+/g, '-').replace(/\//g, '-');
-        const locationSlug = (property.location || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        const slug = [property.id, typeSlug, locationSlug].filter(Boolean).join('-');
+    // Property Routes with SEO slugs and images
+    const propertyRoutes: MetadataRoute.Sitemap = Array.isArray(allProperties)
+        ? allProperties.map((property: any) => {
+            // Generate SEO slug: id-type-location
+            const typeSlug = (property.type || '').toLowerCase().replace(/\s+/g, '-').replace(/\//g, '-');
+            const locationSlug = (property.location || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            const slug = [property.id, typeSlug, locationSlug].filter(Boolean).join('-');
 
-        return {
-            url: `${baseUrl}/property/${slug}`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly' as const,
-            priority: 0.7,
-        };
-    }) : [];
+            // Get property image for sitemap
+            const image = getFirstImage(property.image);
+
+            const entry: any = {
+                url: `${baseUrl}/property/${slug}`,
+                lastModified: today,
+                changeFrequency: 'weekly',
+                priority: 0.8,
+            };
+
+            // Add image if available (Google Image Sitemap)
+            if (image) {
+                entry.images = [image];
+            }
+
+            return entry;
+        })
+        : [];
 
     return [...staticRoutes, ...localityRoutes, ...propertyRoutes];
 }
+
