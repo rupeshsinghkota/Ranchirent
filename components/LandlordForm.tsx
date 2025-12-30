@@ -150,7 +150,7 @@ export default function LandlordForm() {
                     rel="noopener noreferrer"
                     onClick={() => {
                         if (typeof window !== 'undefined' && (window as any).fbq) {
-                            (window as any).fbq('track', 'Lead');
+                            (window as any).fbq('trackCustom', 'WhatsAppButtonClick');
                         }
                     }}
                     className="text-sm font-semibold text-green-600 hover:text-green-700 flex items-center justify-center gap-2"

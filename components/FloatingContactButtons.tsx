@@ -16,13 +16,13 @@ export default function FloatingContactButtons() {
 
     const handleCallClick = () => {
         if (typeof window !== 'undefined' && (window as any).fbq) {
-            (window as any).fbq('track', 'Contact');
+            (window as any).fbq('trackCustom', 'CallButtonClick');
         }
     };
 
     const handleWhatsAppClick = () => {
         if (typeof window !== 'undefined' && (window as any).fbq) {
-            (window as any).fbq('track', 'Lead');
+            (window as any).fbq('trackCustom', 'WhatsAppButtonClick');
         }
     };
 

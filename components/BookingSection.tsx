@@ -17,7 +17,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
     const handleWhatsAppClick = () => {
         // Track WhatsApp clicks as Leads
         if (typeof window !== 'undefined' && (window as any).fbq) {
-            (window as any).fbq('track', 'Lead');
+            (window as any).fbq('trackCustom', 'WhatsAppButtonClick');
         }
     };
 
