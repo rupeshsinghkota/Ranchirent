@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Loader2, Camera, Video } from "lucide-react";
+import { X, Loader2, Camera, Video, GripVertical } from "lucide-react";
 import { localities } from "@/data/localities";
 
 interface EditListingModalProps {
@@ -30,6 +30,10 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
     });
     const [saving, setSaving] = useState(false);
     const [videoLink, setVideoLink] = useState("");
+
+    // Drag and drop state
+    const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+    const [draggedType, setDraggedType] = useState<'existing' | 'new' | null>(null);
 
     useEffect(() => {
         if (property) {
@@ -78,6 +82,56 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
 
     const removeExistingImage = (index: number) => {
         setExistingImages(prev => prev.filter((_, i) => i !== index));
+    };
+
+    // Drag and drop handlers for existing images
+    const handleDragStart = (index: number, type: 'existing' | 'new') => {
+        setDraggedIndex(index);
+        setDraggedType(type);
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+    };
+
+    const handleDropExisting = (targetIndex: number) => {
+        if (draggedIndex === null || draggedType !== 'existing') return;
+
+        setExistingImages(prev => {
+            const newImages = [...prev];
+            const [draggedItem] = newImages.splice(draggedIndex, 1);
+            newImages.splice(targetIndex, 0, draggedItem);
+            return newImages;
+        });
+
+        setDraggedIndex(null);
+        setDraggedType(null);
+    };
+
+    const handleDropNew = (targetIndex: number) => {
+        if (draggedIndex === null || draggedType !== 'new') return;
+
+        setFiles(prev => {
+            const newFiles = [...prev];
+            const [draggedItem] = newFiles.splice(draggedIndex, 1);
+            newFiles.splice(targetIndex, 0, draggedItem);
+            return newFiles;
+        });
+
+        setPreviews(prev => {
+            const newPreviews = [...prev];
+            const [draggedItem] = newPreviews.splice(draggedIndex, 1);
+            newPreviews.splice(targetIndex, 0, draggedItem);
+            return newPreviews;
+        });
+
+        setDraggedIndex(null);
+        setDraggedType(null);
+    };
+
+    const handleDragEnd = () => {
+        setDraggedIndex(null);
+        setDraggedType(null);
     };
 
     // ImgBB Upload
@@ -291,37 +345,66 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
                     {/* Images */}
                     <div className="space-y-4">
                         <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Images</h3>
+                        <p className="text-xs text-gray-400">Drag images to reorder. First image will be the cover photo.</p>
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                             {/* Existing Images */}
                             {existingImages.map((src, i) => (
-                                <div key={`existing-${src}`} className="relative aspect-square">
+                                <div
+                                    key={`existing-${src}`}
+                                    className={`relative aspect-square cursor-move transition-all duration-200 ${draggedIndex === i && draggedType === 'existing'
+                                            ? 'opacity-50 scale-95'
+                                            : 'opacity-100'
+                                        }`}
+                                    draggable
+                                    onDragStart={() => handleDragStart(i, 'existing')}
+                                    onDragOver={handleDragOver}
+                                    onDrop={() => handleDropExisting(i)}
+                                    onDragEnd={handleDragEnd}
+                                >
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={src} className="w-full h-full object-cover rounded-lg border border-gray-200" alt="existing" />
                                     <button
                                         type="button"
                                         onClick={() => removeExistingImage(i)}
-                                        className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                                        className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs hover:bg-red-600 z-10"
                                     >
                                         ✕
                                     </button>
+                                    <div className="absolute top-1 left-1 bg-gray-900/70 text-white p-1 rounded cursor-grab active:cursor-grabbing">
+                                        <GripVertical className="w-3 h-3" />
+                                    </div>
                                     <div className="absolute bottom-1 left-1 bg-blue-500 text-white px-1.5 py-0.5 rounded text-[9px] font-bold">
-                                        OLD
+                                        {i === 0 ? 'COVER' : 'OLD'}
                                     </div>
                                 </div>
                             ))}
 
                             {/* New Image Previews */}
                             {previews.map((src, i) => (
-                                <div key={`new-${i}`} className="relative aspect-square">
+                                <div
+                                    key={`new-${src}`}
+                                    className={`relative aspect-square cursor-move transition-all duration-200 ${draggedIndex === i && draggedType === 'new'
+                                            ? 'opacity-50 scale-95'
+                                            : 'opacity-100'
+                                        }`}
+                                    draggable
+                                    onDragStart={() => handleDragStart(i, 'new')}
+                                    onDragOver={handleDragOver}
+                                    onDrop={() => handleDropNew(i)}
+                                    onDragEnd={handleDragEnd}
+                                >
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={src} className="w-full h-full object-cover rounded-lg border border-gray-200" alt="preview" />
                                     <button
                                         type="button"
                                         onClick={() => removeFile(i)}
-                                        className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                                        className="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs hover:bg-red-600 z-10"
                                     >
                                         ✕
                                     </button>
+                                    <div className="absolute top-1 left-1 bg-gray-900/70 text-white p-1 rounded cursor-grab active:cursor-grabbing">
+                                        <GripVertical className="w-3 h-3" />
+                                    </div>
                                     <div className="absolute bottom-1 left-1 bg-green-500 text-white px-1.5 py-0.5 rounded text-[9px] font-bold">
                                         NEW
                                     </div>
