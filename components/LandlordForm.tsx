@@ -2,7 +2,7 @@
 
 import { localities } from "@/data/localities";
 import { useState } from "react";
-import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Check, Video } from "lucide-react";
+import { User, Phone, Building2, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Check, Video, UserCheck, Wallet } from "lucide-react";
 
 // The MAIN Property Database Script (Same as Admin)
 const PROPERTY_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzI5WNYtNecLvSDpPl0wavFIUj4jhTyeOYHXqRkJxrCfTxUEfURvWN4LfGY_BRUha31/exec";
@@ -12,6 +12,14 @@ export default function LandlordForm() {
     const [files, setFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
     const [videoLink, setVideoLink] = useState("");
+
+    // Agent fields
+    const [isAgent, setIsAgent] = useState(false);
+    const [agentData, setAgentData] = useState({
+        agentName: "",
+        agentMobile: "",
+        agentUPI: ""
+    });
 
     const [formData, setFormData] = useState({
         owner: "",
@@ -87,7 +95,11 @@ export default function LandlordForm() {
                 tenantPref: formData.tenantPref.join(", "),
                 amenities: formData.amenities.join(", "),
                 images: imageUrls,
-                video: formData.videoLink, // Simple link input
+                video: formData.videoLink,
+                // Agent fields (optional)
+                agentName: isAgent ? agentData.agentName : "",
+                agentMobile: isAgent ? agentData.agentMobile : "",
+                agentUPI: isAgent ? agentData.agentUPI : ""
             };
 
             // 4. Submit
@@ -105,6 +117,8 @@ export default function LandlordForm() {
             });
             setFiles([]);
             setPreviews([]);
+            setIsAgent(false);
+            setAgentData({ agentName: "", agentMobile: "", agentUPI: "" });
 
             // Track Facebook Pixel Conversion (Standard Event)
             if (typeof window !== 'undefined' && (window as any).fbq) {
@@ -170,7 +184,7 @@ export default function LandlordForm() {
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Name</label>
                             <div className="relative">
                                 <User className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                                <input required type="text" placeholder="Your Name" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
+                                <input required type="text" placeholder="Owner's Name" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
                                     value={formData.owner} onChange={e => setFormData({ ...formData, owner: e.target.value })} />
                             </div>
                         </div>
@@ -178,11 +192,88 @@ export default function LandlordForm() {
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Phone</label>
                             <div className="relative">
                                 <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                                <input required type="tel" placeholder="Mobile Number" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
+                                <input required type="tel" placeholder="Owner's Mobile" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
                                     value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* Agent Toggle Section */}
+                <div className="space-y-4">
+                    <div
+                        onClick={() => setIsAgent(!isAgent)}
+                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${isAgent
+                                ? 'border-green-500 bg-green-50'
+                                : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                            }`}
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${isAgent ? 'border-green-500 bg-green-500' : 'border-gray-300'
+                                }`}>
+                                {isAgent && <Check className="w-3 h-3 text-white" />}
+                            </div>
+                            <div>
+                                <p className="font-semibold text-gray-900 flex items-center gap-2">
+                                    <UserCheck className="w-4 h-4 text-green-600" />
+                                    I&apos;m a RanchiRent Agent
+                                </p>
+                                <p className="text-xs text-gray-500">Earn 30% commission on successful booking</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Agent Fields (Collapsible) */}
+                    {isAgent && (
+                        <div className="bg-green-50/50 border border-green-100 rounded-xl p-4 space-y-4">
+                            <h4 className="text-xs font-bold text-green-700 uppercase tracking-widest">Your Agent Details</h4>
+                            <div className="grid md:grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Your Name</label>
+                                    <div className="relative">
+                                        <UserCheck className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                        <input
+                                            required={isAgent}
+                                            type="text"
+                                            placeholder="Agent Name"
+                                            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-gray-200 focus:ring-2 focus:ring-green-100 outline-none"
+                                            value={agentData.agentName}
+                                            onChange={e => setAgentData({ ...agentData, agentName: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">Your Mobile</label>
+                                    <div className="relative">
+                                        <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                        <input
+                                            required={isAgent}
+                                            type="tel"
+                                            placeholder="Your Number"
+                                            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-gray-200 focus:ring-2 focus:ring-green-100 outline-none"
+                                            value={agentData.agentMobile}
+                                            onChange={e => setAgentData({ ...agentData, agentMobile: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">UPI ID</label>
+                                    <div className="relative">
+                                        <Wallet className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                        <input
+                                            required={isAgent}
+                                            type="text"
+                                            placeholder="yourname@upi"
+                                            className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-gray-200 focus:ring-2 focus:ring-green-100 outline-none"
+                                            value={agentData.agentUPI}
+                                            onChange={e => setAgentData({ ...agentData, agentUPI: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-xs text-green-600">Commission will be transferred to your UPI after successful tenant move-in.</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* 2. Property Location */}

@@ -197,6 +197,7 @@ export default function AdminManagePage() {
                                         <th className="p-4">Rent</th>
                                         <th className="p-4">Owner</th>
                                         <th className="p-4">Phone</th>
+                                        <th className="p-4">Agent</th>
                                         <th className="p-4 text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -230,6 +231,19 @@ export default function AdminManagePage() {
                                             <td className="p-4 font-medium">₹{Number(p.rent || 0).toLocaleString()}</td>
                                             <td className="p-4">{p.owner || p.Owner || p.OwnerName || p.name || "-"}</td>
                                             <td className="p-4">{p.phone || p.Phone || p.Mobile || p.contact || "-"}</td>
+                                            <td className="p-4">
+                                                {p.agentName ? (
+                                                    <div className="text-xs">
+                                                        <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full font-semibold">
+                                                            {p.agentName}
+                                                        </span>
+                                                        <div className="text-gray-400 mt-1">{p.agentMobile}</div>
+                                                        <div className="text-green-600 text-[10px]">{p.agentUPI}</div>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-gray-300">-</span>
+                                                )}
+                                            </td>
                                             <td className="p-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
