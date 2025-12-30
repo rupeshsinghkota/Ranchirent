@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Loader2, Eye, Pencil, Power } from "lucide-react";
 import EditListingModal from "@/components/EditListingModal";
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzI5WNYtNecLvSDpPl0wavFIUj4jhTyeOYHXqRkJxrCfTxUEfURvWN4LfGY_BRUha31/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp8XgTvaV63TicaSpZdkrbJMPo77inIqJ5Q451iM5snzagbNH9EivxZf9bd7nFSiO5/exec";
 const ADMIN_PASSWORD = "Sheikh8051@";
 
 export default function AdminManagePage() {

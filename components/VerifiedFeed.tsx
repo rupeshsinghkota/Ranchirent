@@ -8,7 +8,7 @@ import PropertyCard from "@/components/PropertyCard";
 import { Property } from "@/data/properties";
 
 // The same Script URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzI5WNYtNecLvSDpPl0wavFIUj4jhTyeOYHXqRkJxrCfTxUEfURvWN4LfGY_BRUha31/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp8XgTvaV63TicaSpZdkrbJMPo77inIqJ5Q451iM5snzagbNH9EivxZf9bd7nFSiO5/exec";
 
 interface SheetProperty {
     id: number;
