@@ -2,15 +2,20 @@
 
 import { localities } from "@/data/localities";
 import { useState } from "react";
-import { User, Phone, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Video } from "lucide-react";
+import { User, Phone, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Video, UserCheck, Wallet } from "lucide-react";
 
-// The MAIN Property Database Script (Same as Admin)
 const PROPERTY_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp8XgTvaV63TicaSpZdkrbJMPo77inIqJ5Q451iM5snzagbNH9EivxZf9bd7nFSiO5/exec";
 
-export default function LandlordForm() {
+export default function AgentForm() {
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
     const [files, setFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
+
+    const [agentData, setAgentData] = useState({
+        agentName: "",
+        agentMobile: "",
+        agentUPI: ""
+    });
 
     const [formData, setFormData] = useState({
         owner: "",
@@ -26,7 +31,6 @@ export default function LandlordForm() {
         videoLink: ""
     });
 
-    // Helper: Toggle Arrays
     const toggleSelection = (field: "tenantPref" | "amenities", item: string) => {
         setFormData(prev => {
             const list = prev[field];
@@ -35,12 +39,10 @@ export default function LandlordForm() {
         });
     };
 
-    // File Handling
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const newFiles = Array.from(e.target.files);
-            // Limit check removed for unlimited uploads
-            const validFiles = newFiles.filter(f => f.size < 4 * 1024 * 1024); // 4MB limit
+            const validFiles = newFiles.filter(f => f.size < 4 * 1024 * 1024);
             setFiles(prev => [...prev, ...validFiles]);
             setPreviews(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
         }
@@ -51,7 +53,6 @@ export default function LandlordForm() {
         setPreviews(prev => prev.filter((_, i) => i !== index));
     };
 
-    // ImgBB Upload
     const uploadToImgBB = async (file: File) => {
         const formData = new FormData();
         formData.append("image", file);
@@ -64,16 +65,13 @@ export default function LandlordForm() {
         throw new Error("Image Upload Failed");
     };
 
-    // Submit Handler
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus("submitting");
 
         try {
-            // 1. Upload Images
             const imageUrls = await Promise.all(files.map(uploadToImgBB));
 
-            // 2. Prepare Payload for Main Database
             const payload = {
                 owner: formData.owner,
                 phone: formData.phone,
@@ -86,10 +84,12 @@ export default function LandlordForm() {
                 tenantPref: formData.tenantPref.join(", "),
                 amenities: formData.amenities.join(", "),
                 images: imageUrls,
-                video: formData.videoLink
+                video: formData.videoLink,
+                agentName: agentData.agentName,
+                agentMobile: agentData.agentMobile,
+                agentUPI: agentData.agentUPI
             };
 
-            // 4. Submit
             await fetch(PROPERTY_SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -102,10 +102,10 @@ export default function LandlordForm() {
                 owner: "", phone: "", address: "", location: "", rent: "", deposit: "",
                 type: "", furnishing: "", tenantPref: [], amenities: [], videoLink: ""
             });
+            setAgentData({ agentName: "", agentMobile: "", agentUPI: "" });
             setFiles([]);
             setPreviews([]);
 
-            // Track Facebook Pixel Conversion (Standard Event)
             if (typeof window !== 'undefined' && (window as any).fbq) {
                 (window as any).fbq('track', 'SubmitApplication');
             }
@@ -122,13 +122,16 @@ export default function LandlordForm() {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle className="w-8 h-8 text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Property Listed!</h3>
-                <p className="text-gray-500 mb-6">Your property has been submitted to our system. It will be live after a quick verification call.</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Property Submitted!</h3>
+                <p className="text-gray-500 mb-4">Your listing is under review. We&apos;ll verify and make it live.</p>
+                <div className="bg-green-50 border border-green-200 p-4 rounded-xl mb-6">
+                    <p className="text-green-800 font-semibold">💰 You&apos;ll earn 30% commission when a tenant is confirmed!</p>
+                </div>
                 <button
                     onClick={() => setStatus("idle")}
-                    className="w-full bg-gray-900 hover:bg-black text-white font-bold py-3.5 rounded-xl transition-all"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl transition-all"
                 >
-                    List Another Property
+                    Add Another Property
                 </button>
             </div>
         );
@@ -136,37 +139,50 @@ export default function LandlordForm() {
 
     return (
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <div className="bg-gray-900 p-6 text-white text-center">
-                <h3 className="text-xl font-bold">List Your Property</h3>
-                <p className="text-gray-400 text-sm mt-1">Free Listing. Verified Tenants.</p>
-            </div>
-
-            {/* Alternative: WhatsApp Listing */}
-            <div className="border-b border-gray-100 bg-gray-50/50 p-4 text-center">
-                <a
-                    href="https://wa.me/917557777987?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                        if (typeof window !== 'undefined' && (window as any).fbq) {
-                            (window as any).fbq('trackCustom', 'WhatsAppButtonClick');
-                        }
-                    }}
-                    className="text-sm font-semibold text-green-600 hover:text-green-700 flex items-center justify-center gap-2"
-                >
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-4 h-4" alt="WA" />
-                    Prefer sending details on WhatsApp? Click here
-                </a>
+            <div className="bg-green-600 p-6 text-white text-center">
+                <h3 className="text-xl font-bold">Add a Property</h3>
+                <p className="text-green-100 text-sm mt-1">Earn 30% commission on every booking</p>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6 pt-6">
 
-                {/* 1. Owner Details */}
+                {/* Agent Details (Required) */}
                 <div className="space-y-4">
-                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Owner Details</h4>
+                    <h4 className="text-xs font-bold text-green-600 uppercase tracking-widest border-b border-gray-100 pb-2">Your Agent Details</h4>
+                    <div className="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Your Name</label>
+                            <div className="relative">
+                                <UserCheck className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                <input required type="text" placeholder="Your Name" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-green-100 outline-none"
+                                    value={agentData.agentName} onChange={e => setAgentData({ ...agentData, agentName: e.target.value })} />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Your Mobile</label>
+                            <div className="relative">
+                                <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                <input required type="tel" placeholder="Your Number" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-green-100 outline-none"
+                                    value={agentData.agentMobile} onChange={e => setAgentData({ ...agentData, agentMobile: e.target.value })} />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">UPI ID</label>
+                            <div className="relative">
+                                <Wallet className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                <input required type="text" placeholder="yourname@upi" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-green-100 outline-none"
+                                    value={agentData.agentUPI} onChange={e => setAgentData({ ...agentData, agentUPI: e.target.value })} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Owner Details */}
+                <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Owner Details</h4>
                     <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">Name</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Owner Name</label>
                             <div className="relative">
                                 <User className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                                 <input required type="text" placeholder="Owner's Name" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
@@ -174,7 +190,7 @@ export default function LandlordForm() {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">Phone</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Owner Phone</label>
                             <div className="relative">
                                 <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                                 <input required type="tel" placeholder="Owner's Mobile" className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none"
@@ -184,7 +200,7 @@ export default function LandlordForm() {
                     </div>
                 </div>
 
-                {/* 2. Property Location */}
+                {/* Location */}
                 <div className="space-y-4">
                     <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Location</h4>
                     <div className="grid md:grid-cols-2 gap-4">
@@ -207,7 +223,7 @@ export default function LandlordForm() {
                     </div>
                 </div>
 
-                {/* 3. Property Specs */}
+                {/* Property Specs */}
                 <div className="space-y-4">
                     <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Property Details</h4>
                     <div className="grid grid-cols-2 gap-4">
@@ -242,10 +258,9 @@ export default function LandlordForm() {
                     </div>
                 </div>
 
-                {/* 4. Preferences */}
+                {/* Preferences */}
                 <div className="space-y-4">
                     <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Preferences & Amenities</h4>
-
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Preferred Tenant(s)</label>
                         <div className="flex flex-wrap gap-2">
@@ -257,7 +272,6 @@ export default function LandlordForm() {
                             ))}
                         </div>
                     </div>
-
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Amenities</label>
                         <div className="flex flex-wrap gap-2">
@@ -271,7 +285,7 @@ export default function LandlordForm() {
                     </div>
                 </div>
 
-                {/* 5. Photos */}
+                {/* Photos */}
                 <div className="space-y-4">
                     <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Photos</h4>
                     <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
@@ -289,7 +303,7 @@ export default function LandlordForm() {
                     </div>
                 </div>
 
-                {/* 6. Video Link */}
+                {/* Video Link */}
                 <div className="space-y-4">
                     <h4 className="text-xs font-bold text-blue-600 uppercase tracking-widest border-b border-gray-100 pb-2">Video Link (Optional)</h4>
                     <div className="relative">
@@ -302,7 +316,6 @@ export default function LandlordForm() {
                             onChange={e => setFormData({ ...formData, videoLink: e.target.value })}
                         />
                     </div>
-                    <p className="text-xs text-gray-400">Upload video to YouTube (unlisted) or Google Drive and paste the link here</p>
                 </div>
 
                 {/* Submit Button */}
@@ -310,19 +323,19 @@ export default function LandlordForm() {
                     <button
                         type="submit"
                         disabled={status === "submitting"}
-                        className="w-full bg-gray-900 hover:bg-black disabled:bg-gray-400 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] flex items-center justify-center gap-2"
+                        className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] flex items-center justify-center gap-2"
                     >
                         {status === "submitting" ? (
                             <>
                                 <Loader2 className="w-5 h-5 animate-spin" />
-                                Listing Property...
+                                Submitting...
                             </>
                         ) : (
-                            "Submit Free Listing"
+                            "Submit & Earn Commission"
                         )}
                     </button>
                     <p className="text-xs text-center text-gray-400 mt-3">
-                        By submitting, you agree to our terms. We protect your privacy.
+                        30% of brokerage will be paid to your UPI after successful tenant move-in.
                     </p>
                 </div>
             </form>
