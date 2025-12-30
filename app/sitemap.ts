@@ -51,13 +51,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.9,
     }));
 
-    // Property Routes (REAL Data)
-    const propertyRoutes = Array.isArray(allProperties) ? allProperties.map((property: any) => ({
-        url: `${baseUrl}/property/${property.id}`,
-        lastModified: new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.7,
-    })) : [];
+    // Property Routes (REAL Data with SEO-friendly slugs)
+    const propertyRoutes = Array.isArray(allProperties) ? allProperties.map((property: any) => {
+        // Generate SEO slug: id-type-location
+        const typeSlug = (property.type || '').toLowerCase().replace(/\s+/g, '-').replace(/\//g, '-');
+        const locationSlug = (property.location || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        const slug = [property.id, typeSlug, locationSlug].filter(Boolean).join('-');
+
+        return {
+            url: `${baseUrl}/property/${slug}`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly' as const,
+            priority: 0.7,
+        };
+    }) : [];
 
     return [...staticRoutes, ...localityRoutes, ...propertyRoutes];
 }

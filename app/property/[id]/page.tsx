@@ -5,6 +5,7 @@ import BookingSection from "@/components/BookingSection";
 import PropertyGallery from "@/components/PropertyGallery";
 import Link from "next/link";
 import SimilarProperties from "@/components/SimilarProperties";
+import { extractIdFromSlug, generatePropertySlug } from "@/lib/slugUtils";
 
 // Server-side Fetch with Cache (60s)
 async function getProperties() {
@@ -39,10 +40,11 @@ const getDirectUrl = (url: string) => {
 
 // Generate Dynamic Metadata
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-    const { id } = await params;
+    const { id: slug } = await params;
+    const propertyId = extractIdFromSlug(slug);
     const allProperties = await getProperties();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const property = allProperties.find((p: any) => p.id == id);
+    const property = allProperties.find((p: any) => p.id == propertyId);
 
     if (!property) {
         return {
@@ -61,7 +63,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         openGraph: {
             title: title,
             description: description,
-            url: `https://ranchirent.in/property/${id}`,
+            url: `https://ranchirent.in/property/${slug}`,
             images: image ? [{ url: image }] : [],
             type: "article",
         },
@@ -70,14 +72,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function PropertyPage({ params }: { params: Promise<{ id: string }> }) {
     // Unwrap params for Next.js 15+ compatibility
-    const { id } = await params;
+    const { id: slug } = await params;
+    const propertyId = extractIdFromSlug(slug);
 
     // Fetch All Properties (Server Side)
     const allProperties = await getProperties();
 
     // Find Specific Property
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rawProperty = allProperties.find((p: any) => p.id == id); // Loose equality for string/number
+    const rawProperty = allProperties.find((p: any) => p.id == propertyId); // Loose equality for string/number
 
     if (!rawProperty) {
         return notFound();

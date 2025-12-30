@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Property } from "@/data/properties";
+import { generatePropertySlug } from "@/lib/slugUtils";
 
 interface PropertyProps {
     property: Property;
@@ -23,7 +24,7 @@ export default function PropertyCard({ property }: PropertyProps) {
     return (
         <div className="group rounded-xl border border-gray-100 bg-white shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-row sm:flex-col hover:-translate-y-1 h-28 sm:h-auto">
             {/* Image Placeholder */}
-            <Link href={`/property/${property.id}`} className="relative w-[32%] sm:w-full sm:aspect-[4/3] flex-shrink-0 bg-gray-100 block group-hover:opacity-95 transition-opacity">
+            <Link href={generatePropertySlug(property.id, property.type, property.location)} className="relative w-[32%] sm:w-full sm:aspect-[4/3] flex-shrink-0 bg-gray-100 block group-hover:opacity-95 transition-opacity">
                 <Image
                     src={getImageUrl(property.image)}
                     alt={property.title}
@@ -50,7 +51,7 @@ export default function PropertyCard({ property }: PropertyProps) {
                     </div>
 
                     <div className="flex justify-between items-start mb-0.5 sm:mb-2 gap-2">
-                        <Link href={`/property/${property.id}`} className="hover:text-brand-blue transition group-hover:text-brand-blue flex-grow">
+                        <Link href={generatePropertySlug(property.id, property.type, property.location)} className="hover:text-brand-blue transition group-hover:text-brand-blue flex-grow">
                             <h3 className="text-sm sm:text-base font-bold text-gray-900 line-clamp-2 sm:line-clamp-1 leading-tight">{property.title}</h3>
                         </Link>
                         <span className="hidden sm:inline text-base font-bold text-brand-blue whitespace-nowrap">{property.price}<span className="text-xs font-normal text-gray-500">/mo</span></span>
@@ -89,7 +90,7 @@ export default function PropertyCard({ property }: PropertyProps) {
                         WhatsApp
                     </a>
                     <Link
-                        href={`/property/${property.id}`}
+                        href={generatePropertySlug(property.id, property.type, property.location)}
                         className="flex items-center justify-center gap-1.5 rounded-lg bg-brand-blue py-2 text-xs font-bold text-white hover:bg-blue-700 transition shadow-sm"
                     >
                         Book
