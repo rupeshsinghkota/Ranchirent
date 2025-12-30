@@ -294,7 +294,7 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                             {/* Existing Images */}
                             {existingImages.map((src, i) => (
-                                <div key={`existing-${i}`} className="relative aspect-square">
+                                <div key={`existing-${src}`} className="relative aspect-square">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={src} className="w-full h-full object-cover rounded-lg border border-gray-200" alt="existing" />
                                     <button
