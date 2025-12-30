@@ -47,19 +47,35 @@ export async function generateMetadata(
         };
     }
 
-    const title = `Flats for Rent in ${localityName}, Ranchi | Verified Owners`;
-    const description = `Find verified 1 BHK, 2 BHK, 3 BHK flats for rent in ${localityName}, Ranchi. Zero brokerage options, guided visits, and direct owner contact.`;
+    const title = `Flats, PG & Shops for Rent in ${localityName}, Ranchi | Verified Owners`;
+    const description = `Find verified 1 BHK, 2 BHK, 3 BHK flats, PG/hostels, independent houses & shops for rent in ${localityName}, Ranchi. Zero brokerage, direct owner contact. Browse 50+ properties.`;
 
     return {
         title: title,
         description: description,
+        keywords: [
+            `flat for rent in ${localityName} Ranchi`,
+            `PG in ${localityName} Ranchi`,
+            `hostel in ${localityName}`,
+            `1 BHK in ${localityName}`,
+            `2 BHK in ${localityName}`,
+            `3 BHK in ${localityName}`,
+            `shop for rent in ${localityName}`,
+            `room for rent in ${localityName}`,
+            `bachelor flat ${localityName}`,
+            `family flat ${localityName}`,
+            `${localityName} rental property`,
+        ],
         openGraph: {
             title: title,
             description: description,
-            url: `https://www.ranchirent.in/rent/${params.locality}`,
+            url: `https://ranchirent.in/rent/${params.locality}`,
             siteName: "RanchiRent",
             locale: "en_IN",
             type: "website",
+        },
+        alternates: {
+            canonical: `https://ranchirent.in/rent/${params.locality}`,
         },
     };
 }
