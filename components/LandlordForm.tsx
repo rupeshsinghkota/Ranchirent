@@ -261,7 +261,7 @@ export default function LandlordForm() {
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">Amenities</label>
                         <div className="flex flex-wrap gap-2">
-                            {["Parking", "Lift", "Power Backup", "WiFi", "Security", "Western Toilet"].map(tag => (
+                            {["Parking", "Lift", "Power Backup", "WiFi", "Security", "Western Toilet", "Geyser", "AC", "RO Water", "Balcony", "Modular Kitchen", "Washing Machine", "Fridge", "TV", "CCTV", "Garden"].map(tag => (
                                 <button type="button" key={tag} onClick={() => toggleSelection("amenities", tag)}
                                     className={`px-3 py-1 text-xs font-medium rounded-full border transition ${formData.amenities.includes(tag) ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"}`}>
                                     {tag}
