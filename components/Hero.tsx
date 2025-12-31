@@ -22,11 +22,12 @@ export default function Hero() {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/hero-bg.png"
-                    alt="Luxury Apartment in Ranchi"
+                    src="/hero-bg.jpg"
+                    alt="Modern luxury apartment interior in Ranchi - Find verified flats and PG for rent"
                     fill
                     className="object-cover"
                     priority
+                    quality={75}
                 />
                 {/* Gradient Overlay for Text Readability */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />

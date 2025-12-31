@@ -43,7 +43,7 @@ export default function FloatingContactButtons() {
                 <a
                     href={`https://wa.me/917557777987?text=${encodedMessage}`}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer nofollow"
                     onClick={handleWhatsAppClick}
                     className="flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold py-3 rounded-xl shadow-sm hover:bg-[#128C7E] active:scale-95 transition-all text-sm"
                 >

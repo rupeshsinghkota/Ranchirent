@@ -25,8 +25,8 @@ export default function SimilarProperties({ properties }: SimilarPropertiesProps
                         {/* Image Container */}
                         <div className="relative w-full aspect-[4/3] sm:h-56 bg-gray-100">
                             <Image
-                                src={p.image || "/property-placeholder.png"}
-                                alt={p.title}
+                                src={p.image || "/property-placeholder.jpg"}
+                                alt={`${p.title} - ${p.type} for rent in ${p.location}, Ranchi at ${p.price}`}
                                 fill
                                 sizes="(max-width: 768px) 85vw, 33vw"
                                 className="object-cover group-hover:scale-105 transition duration-700 ease-in-out"

@@ -5,6 +5,7 @@ import BookingSection from "@/components/BookingSection";
 import PropertyGallery from "@/components/PropertyGallery";
 import Link from "next/link";
 import SimilarProperties from "@/components/SimilarProperties";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { extractIdFromSlug, generatePropertySlug } from "@/lib/slugUtils";
 
 // Server-side Fetch with Cache (60s)
@@ -126,11 +127,13 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
 
     return (
         <main className="container mx-auto px-0 sm:px-4 py-0 sm:py-8 lg:py-12 pb-24 lg:pb-12">
-            {/* Breadcrumb / Back (Hidden on Mobile, now in Gallery) */}
+            {/* Breadcrumb Navigation */}
             <div className="hidden sm:block mb-6 pt-4 sm:pt-0 px-4 sm:px-0">
-                <Link href="/listings" className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-brand-blue transition">
-                    <ArrowLeft className="w-4 h-4 mr-1" /> Back to Listings
-                </Link>
+                <Breadcrumbs items={[
+                    { label: "All Properties", href: "/listings" },
+                    { label: property.location, href: `/rent/${property.location.toLowerCase().replace(/ /g, '-')}` },
+                    { label: property.title }
+                ]} />
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8 gap-y-12">
@@ -281,22 +284,42 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
                 dangerouslySetInnerHTML={{
                     __html: JSON.stringify({
                         "@context": "https://schema.org",
-                        "@type": "Product",
+                        "@type": "Apartment",
                         "name": property.title,
-                        "image": images.length > 0 ? images : ["https://ranchirent.in/property-placeholder.png"],
                         "description": property.description,
-                        "brand": {
-                            "@type": "Brand",
-                            "name": "RanchiRent"
+                        "image": images.length > 0 ? images : ["https://ranchirent.in/property-placeholder.jpg"],
+                        "url": `https://ranchirent.in/property/${slug}`,
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": property.location,
+                            "addressRegion": "Jharkhand",
+                            "addressCountry": "IN"
                         },
+                        "numberOfRooms": property.beds,
+                        "numberOfBathroomsTotal": property.baths,
+                        "floorSize": {
+                            "@type": "QuantitativeValue",
+                            "value": property.area,
+                            "unitCode": "FTK"
+                        },
+                        "amenityFeature": amenities.map((a: string) => ({
+                            "@type": "LocationFeatureSpecification",
+                            "name": a,
+                            "value": true
+                        })),
                         "offers": {
                             "@type": "Offer",
-                            "url": `https://ranchirent.in/property/${property.id}`,
+                            "url": `https://ranchirent.in/property/${slug}`,
                             "priceCurrency": "INR",
                             "price": rawProperty.rent,
-                            "priceValidUntil": "2025-12-31",
-                            "availability": "https://schema.org/InStock",
-                            "itemCondition": "https://schema.org/NewCondition"
+                            "priceValidUntil": "2026-12-31",
+                            "availability": "https://schema.org/InStock"
+                        },
+                        "provider": {
+                            "@type": "RealEstateAgent",
+                            "name": "RanchiRent",
+                            "url": "https://ranchirent.in",
+                            "telephone": "+917557777987"
                         }
                     })
                 }}

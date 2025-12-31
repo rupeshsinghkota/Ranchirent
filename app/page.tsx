@@ -154,10 +154,10 @@ export default function Home() {
                 <Link href="/landlord" className="px-8 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg text-center">
                   List Your Property
                 </Link>
-                <Link href="https://wa.me/917557777987" target="_blank" className="px-8 py-4 bg-transparent border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white/10 transition flex items-center justify-center gap-2">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-5 h-5 filter brightness-0 invert" alt="WhatsApp" />
+                <a href="https://wa.me/917557777987" target="_blank" rel="noopener noreferrer nofollow" className="px-8 py-4 bg-transparent border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-5 h-5 filter brightness-0 invert" alt="WhatsApp icon" />
                   WhatsApp Us
-                </Link>
+                </a>
               </div>
             </div>
 
@@ -246,6 +246,51 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-12">
+            <span className="text-brand-blue font-bold tracking-wider text-xs uppercase mb-2 block">Got Questions?</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Frequently Asked Questions</h2>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              {
+                q: "How do I rent a flat in Ranchi through RanchiRent?",
+                a: "Simply browse our verified listings, shortlist properties you like, and contact us to schedule a guided visit. Our agent will pick you up and show you the properties. Once you finalize, we handle the negotiation and paperwork."
+              },
+              {
+                q: "Is there any brokerage fee for tenants?",
+                a: "We charge a nominal service fee equivalent to 15 days rent only after you successfully move in. This covers guided visits, negotiation, and rental agreement assistance."
+              },
+              {
+                q: "Are all properties on RanchiRent verified?",
+                a: "Yes! Every property listed on RanchiRent is 100% physically verified by our team. We visit each property to confirm real photos, legitimate owners, and accurate pricing."
+              },
+              {
+                q: "Which areas in Ranchi does RanchiRent cover?",
+                a: "We cover all major localities including Lalpur, Bariatu, Morabadi, Kanke Road, Doranda, Hinoo, Kokar, Harmu, Argora, Kadru, Ratu Road, and many more areas across Ranchi."
+              },
+              {
+                q: "How can property owners list their flat on RanchiRent?",
+                a: "Property owners can list their flat for free by filling out our landlord form or WhatsApp us directly. We'll verify your property and list it within 24 hours. No upfront fees for owners."
+              }
+            ].map((faq, i) => (
+              <details key={i} className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <summary className="px-6 py-5 cursor-pointer flex items-center justify-between font-bold text-gray-900 hover:bg-gray-50 transition list-none">
+                  <span>{faq.q}</span>
+                  <span className="text-brand-blue text-xl group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <div className="px-6 pb-5 text-gray-600 leading-relaxed">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <HomeSeoContent />
 
       {/* JSON-LD Schema for Organization */}
@@ -287,6 +332,66 @@ export default function Home() {
             "sameAs": [
               "https://www.instagram.com/ranchirent/",
               "https://www.facebook.com/profile.php?id=61585765550042"
+            ],
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "200",
+              "bestRating": "5",
+              "worstRating": "1"
+            }
+          })
+        }}
+      />
+
+      {/* JSON-LD Schema for FAQ - Helps get rich results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How do I rent a flat in Ranchi through RanchiRent?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Simply browse our verified listings, shortlist properties you like, and contact us to schedule a guided visit. Our agent will pick you up and show you the properties. Once you finalize, we handle the negotiation and paperwork."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is there any brokerage fee for tenants?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We charge a nominal service fee equivalent to 15 days rent only after you successfully move in. This covers guided visits, negotiation, and rental agreement assistance."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Are all properties on RanchiRent verified?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes! Every property listed on RanchiRent is 100% physically verified by our team. We visit each property to confirm real photos, legitimate owners, and accurate pricing."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which areas in Ranchi does RanchiRent cover?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We cover all major localities including Lalpur, Bariatu, Morabadi, Kanke Road, Doranda, Hinoo, Kokar, Harmu, Argora, Kadru, Ratu Road, and many more areas across Ranchi."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How can property owners list their flat on RanchiRent?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Property owners can list their flat for free by filling out our landlord form or WhatsApp us directly. We'll verify your property and list it within 24 hours. No upfront fees for owners."
+                }
+              }
             ]
           })
         }}

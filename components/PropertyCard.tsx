@@ -12,12 +12,12 @@ interface PropertyProps {
 export default function PropertyCard({ property }: PropertyProps) {
     // Helper to validate and get safe image URL
     const getImageUrl = (url: string | undefined | null) => {
-        if (!url || url === "No Image") return "/property-placeholder.png";
+        if (!url || url === "No Image") return "/property-placeholder.jpg";
         try {
             new URL(url);
             return url;
         } catch {
-            return "/property-placeholder.png";
+            return "/property-placeholder.jpg";
         }
     };
 
@@ -27,7 +27,7 @@ export default function PropertyCard({ property }: PropertyProps) {
             <Link href={generatePropertySlug(property.id, property.type, property.location)} className="relative w-[32%] sm:w-full sm:aspect-[4/3] flex-shrink-0 bg-gray-100 block group-hover:opacity-95 transition-opacity">
                 <Image
                     src={getImageUrl(property.image)}
-                    alt={property.title}
+                    alt={`${property.type} for rent in ${property.location}, Ranchi - ${property.price} per month, ${property.beds} BHK`}
                     fill
                     sizes="(max-width: 768px) 35vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -84,7 +84,7 @@ export default function PropertyCard({ property }: PropertyProps) {
                     <a
                         href={`https://wa.me/917557777987?text=I am interested in ${property.title} at ${property.location}`}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener noreferrer nofollow"
                         className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition"
                     >
                         WhatsApp

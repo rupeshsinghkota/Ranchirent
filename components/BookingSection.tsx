@@ -39,7 +39,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
                     <a
                         href={`https://wa.me/917557777987?text=Hi, I saw ${propertyTitle} (ID: ${propertyId}) in ${propertyLocation} on RanchiRent.in. Need more info.`}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener noreferrer nofollow"
                         onClick={handleWhatsAppClick}
                         className="flex items-center justify-center gap-2 w-full rounded-xl border border-gray-200 bg-white py-3.5 text-base font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition"
                     >
@@ -64,7 +64,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
                 <a
                     href={`https://wa.me/917557777987?text=Hi, I saw ${propertyTitle} in ${propertyLocation} on RanchiRent.in. Need more info.`}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer nofollow"
                     onClick={handleWhatsAppClick}
                     className="flex-1 flex flex-col items-center justify-center gap-1 rounded-xl border border-gray-200 bg-gray-50 py-2.5 text-sm font-bold text-gray-700 active:scale-95 transition"
                 >

@@ -11,12 +11,12 @@ export default function PropertyGallery({ images, title }: { images: string[], t
 
     // Helper to validate and get safe image URL
     const getValidImageUrl = (url: string | undefined | null) => {
-        if (!url || url === "No Image") return "/property-placeholder.png";
+        if (!url || url === "No Image") return "/property-placeholder.jpg";
         try {
             new URL(url);
             return url;
         } catch {
-            return "/property-placeholder.png";
+            return "/property-placeholder.jpg";
         }
     };
 
@@ -55,7 +55,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
                 >
                     <Image
                         src={getValidImageUrl(images[0])}
-                        alt={`${title} - Main`}
+                        alt={`${title} - Main photo showing property interior and features`}
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
                         className="object-cover group-hover:scale-105 transition duration-500"
@@ -73,7 +73,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
                         >
                             <Image
                                 src={getValidImageUrl(images[i])}
-                                alt={`${title} - View ${i}`}
+                                alt={`${title} - Additional view ${i} showing rooms and amenities`}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 25vw"
                                 className="object-cover group-hover:scale-105 transition duration-500"
@@ -92,7 +92,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
             <div className="sm:hidden -mx-4 sm:mx-0 h-[45vh] relative overflow-hidden shadow-sm">
                 <Image
                     src={getValidImageUrl(images[0])}
-                    alt={title}
+                    alt={`${title} - Property for rent in Ranchi showing interior details`}
                     fill
                     sizes="100vw"
                     className="object-cover"
@@ -134,7 +134,7 @@ export default function PropertyGallery({ images, title }: { images: string[], t
                     <div className="relative w-full max-w-5xl h-[70vh] md:h-[85vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                         <Image
                             src={getValidImageUrl(images[currentIndex])}
-                            alt={`Gallery ${currentIndex + 1}`}
+                            alt={`${title} - Photo ${currentIndex + 1} of ${images.length}`}
                             fill
                             sizes="100vw"
                             className="object-contain md:object-contain rounded shadow-2xl"

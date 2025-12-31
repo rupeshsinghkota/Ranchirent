@@ -158,7 +158,7 @@ export default function LandlordForm() {
                 <a
                     href="https://wa.me/917557777987?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer nofollow"
                     onClick={() => {
                         if (typeof window !== 'undefined' && (window as any).fbq) {
                             (window as any).fbq('trackCustom', 'WhatsAppButtonClick');
@@ -166,7 +166,7 @@ export default function LandlordForm() {
                     }}
                     className="text-sm font-semibold text-green-600 hover:text-green-700 flex items-center justify-center gap-2"
                 >
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-4 h-4" alt="WA" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-4 h-4" alt="WhatsApp icon" />
                     Prefer sending details on WhatsApp? Click here
                 </a>
             </div>

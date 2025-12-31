@@ -66,10 +66,10 @@ export default function LandlordPage() {
                         <a
                             href="https://wa.me/917557777987?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
                             target="_blank"
-                            rel="noopener noreferrer"
+                            rel="noopener noreferrer nofollow"
                             className="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#20bd5a] transition shadow-lg hover:shadow-green-200"
                         >
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-5 h-5 filter brightness-0 invert" alt="WhatsApp" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-5 h-5 filter brightness-0 invert" alt="WhatsApp icon" />
                             List via WhatsApp
                         </a>
                     </div>
