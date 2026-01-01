@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Phone, MessageCircle } from "lucide-react";
+import { trackConversion } from "@/lib/tracking";
 
 export default function FloatingContactButtons() {
     const pathname = usePathname();
@@ -15,15 +16,11 @@ export default function FloatingContactButtons() {
     const encodedMessage = encodeURIComponent(whatsappMessage);
 
     const handleCallClick = () => {
-        if (typeof window !== 'undefined' && (window as any).fbq) {
-            (window as any).fbq('trackCustom', 'CallButtonClick');
-        }
+        trackConversion("CallButtonClick");
     };
 
     const handleWhatsAppClick = () => {
-        if (typeof window !== 'undefined' && (window as any).fbq) {
-            (window as any).fbq('trackCustom', 'WhatsAppButtonClick');
-        }
+        trackConversion("WhatsAppButtonClick");
     };
 
     // Optional: Hide on specific pages if needed

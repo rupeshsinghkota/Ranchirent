@@ -29,5 +29,6 @@ export const localities = [
     "Pundag",
     "Ratu Chatti",
     "Ratu Road",
-    "Tupudana"
+    "Tupudana",
+    "Upper Bazar"
 ].sort();

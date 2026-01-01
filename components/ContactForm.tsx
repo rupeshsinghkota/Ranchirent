@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ArrowRight, Loader2, CheckCircle } from 'lucide-react';
+import { trackConversion } from '@/lib/tracking';
 
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhU5xYa1CVrQWJ49VBEsXhSuk_fcUD6Mo1hzm4IgTnaAiTvuYi1xkOx0plDtS9SEGO/exec";
 
@@ -34,12 +35,15 @@ export default function ContactForm() {
                 body: JSON.stringify(payload),
             });
 
-            // Track Facebook Pixel Conversion
-            if (typeof window !== 'undefined' && (window as any).fbq) {
-                (window as any).fbq('track', 'Contact');
-            }
+            // Track Conversion (FB + GA)
+            trackConversion("Contact");
 
             setStatus("success");
+            setFormData({
+                name: "",
+                phone: "",
+                message: ""
+            });
         } catch (error) {
             console.error("Error submitting form", error);
             setStatus("error");

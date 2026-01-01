@@ -3,6 +3,7 @@
 import { localities } from "@/data/localities";
 import { useState } from "react";
 import { User, Phone, MapPin, IndianRupee, Loader2, CheckCircle, Camera, Video } from "lucide-react";
+import { trackConversion } from "@/lib/tracking";
 
 // The MAIN Property Database Script (Same as Admin)
 const PROPERTY_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp8XgTvaV63TicaSpZdkrbJMPo77inIqJ5Q451iM5snzagbNH9EivxZf9bd7nFSiO5/exec";
@@ -117,10 +118,8 @@ export default function LandlordForm() {
             setFiles([]);
             setPreviews([]);
 
-            // Track Facebook Pixel Conversion (Standard Event)
-            if (typeof window !== 'undefined' && (window as any).fbq) {
-                (window as any).fbq('track', 'SubmitApplication');
-            }
+            // Track Conversion (FB + GA)
+            trackConversion("SubmitApplication");
 
         } catch (error) {
             console.error(error);
@@ -160,9 +159,7 @@ export default function LandlordForm() {
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     onClick={() => {
-                        if (typeof window !== 'undefined' && (window as any).fbq) {
-                            (window as any).fbq('trackCustom', 'WhatsAppButtonClick');
-                        }
+                        trackConversion("WhatsAppButtonClick");
                     }}
                     className="text-sm font-semibold text-green-600 hover:text-green-700 flex items-center justify-center gap-2"
                 >
@@ -228,7 +225,7 @@ export default function LandlordForm() {
                             <select required className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
                                 value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
                                 <option value="">Select Type</option>
-                                {["1 RK", "1 BHK", "2 BHK", "3 BHK", "Independent House", "PG/Hostel", "Shop/Office"].map(t => <option key={t} value={t}>{t}</option>)}
+                                {["1 RK", "1 BHK", "2 BHK", "3 BHK", "4 BHK", "Independent House", "PG/Hostel", "Shop/Office"].map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
                         </div>
                         <div>

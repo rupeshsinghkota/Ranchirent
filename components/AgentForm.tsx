@@ -244,7 +244,7 @@ export default function AgentForm() {
                             <select required className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
                                 value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })}>
                                 <option value="">Select Type</option>
-                                {["1 RK", "1 BHK", "2 BHK", "3 BHK", "Independent House", "PG/Hostel", "Shop/Office"].map(t => <option key={t} value={t}>{t}</option>)}
+                                {["1 RK", "1 BHK", "2 BHK", "3 BHK", "4 BHK", "Independent House", "PG/Hostel", "Shop/Office"].map(t => <option key={t} value={t}>{t}</option>)}
                             </select>
                         </div>
                         <div>

@@ -274,7 +274,7 @@ export default function EditListingModal({ property, onClose, onSuccess }: EditL
                                     className="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-200 outline-none"
                                 >
                                     <option value="">Select Type</option>
-                                    {["1 RK", "1 BHK", "2 BHK", "3 BHK", "Independent House", "PG/Hostel", "Shop/Office"].map((t) => (
+                                    {["1 RK", "1 BHK", "2 BHK", "3 BHK", "4 BHK", "Independent House", "PG/Hostel", "Shop/Office"].map((t) => (
                                         <option key={t} value={t}>{t}</option>
                                     ))}
                                 </select>

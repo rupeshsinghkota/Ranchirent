@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { User, Phone, MapPin, IndianRupee, Loader2, CheckCircle, ArrowRight } from "lucide-react";
 import { localities } from "@/data/localities";
+import { trackConversion } from "@/lib/tracking";
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhU5xYa1CVrQWJ49VBEsXhSuk_fcUD6Mo1hzm4IgTnaAiTvuYi1xkOx0plDtS9SEGO/exec"; // Using the contact form script for now, assuming it handles "Type"
 
@@ -37,10 +38,8 @@ export default function TenantRequirementForm({ onSuccess }: { onSuccess?: () =>
                 body: JSON.stringify(payload)
             });
 
-            // Track Facebook Pixel
-            if (typeof window !== 'undefined' && (window as any).fbq) {
-                (window as any).fbq('track', 'Lead');
-            }
+            // Track Conversion (FB + GA)
+            trackConversion("Lead");
 
             setStatus("success");
             if (onSuccess) {
