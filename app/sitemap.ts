@@ -130,6 +130,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         })
         : [];
 
-    return [...staticRoutes, ...localityRoutes, ...propertyRoutes];
+
+
+    // Blog Routes
+    let blogRoutes: MetadataRoute.Sitemap = [];
+    try {
+        const fs = await import('fs');
+        const path = await import('path');
+        const blogPath = path.join(process.cwd(), 'data', 'blog_posts.json');
+
+        if (fs.existsSync(blogPath)) {
+            const fileContents = fs.readFileSync(blogPath, 'utf8');
+            const posts = JSON.parse(fileContents);
+
+            blogRoutes = posts.map((post: any) => ({
+                url: `${baseUrl}/blog/${post.slug}`,
+                lastModified: new Date(post.date),
+                changeFrequency: 'monthly',
+                priority: 0.7,
+            }));
+        }
+    } catch (e) {
+        console.error("Failed to add blog posts to sitemap:", e);
+    }
+
+    // Add Blog Index
+    const blogIndexRoute = {
+        url: `${baseUrl}/blog`,
+        lastModified: today,
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+    };
+
+    return [...staticRoutes, blogIndexRoute, ...localityRoutes, ...propertyRoutes, ...blogRoutes];
 }
 
