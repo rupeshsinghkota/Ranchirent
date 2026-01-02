@@ -67,6 +67,8 @@ export default function Navbar() {
                         </div>
                     </div>
 
+
+                    <NavLink href="/blog" active={isActive('/blog')}>Blog</NavLink>
                     <NavLink href="/about" active={isActive('/about')}>About</NavLink>
                     <NavLink href="/contact" active={isActive('/contact')}>Contact</NavLink>
                 </div>
@@ -131,8 +133,10 @@ export default function Navbar() {
                                 ))}
                             </div>
                         )}
+
                     </div>
 
+                    <MobileLink href="/blog" onClick={() => setIsMenuOpen(false)} active={isActive('/blog')}>Blog / Insights</MobileLink>
                     <MobileLink href="/about" onClick={() => setIsMenuOpen(false)} active={isActive('/about')}>About Us</MobileLink>
                     <MobileLink href="/contact" onClick={() => setIsMenuOpen(false)} active={isActive('/contact')}>Contact</MobileLink>
                     <hr className="border-gray-100 my-2" />

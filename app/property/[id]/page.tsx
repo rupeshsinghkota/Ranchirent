@@ -12,7 +12,7 @@ import { extractIdFromSlug, generatePropertySlug } from "@/lib/slugUtils";
 async function getProperties() {
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyp8XgTvaV63TicaSpZdkrbJMPo77inIqJ5Q451iM5snzagbNH9EivxZf9bd7nFSiO5/exec";
     try {
-        const res = await fetch(SCRIPT_URL, { next: { revalidate: 60 } });
+        const res = await fetch(SCRIPT_URL, { next: { revalidate: 3600 } });
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
     } catch (e) {
