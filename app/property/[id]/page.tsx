@@ -7,6 +7,7 @@ import Link from "next/link";
 import SimilarProperties from "@/components/SimilarProperties";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { extractIdFromSlug, generatePropertySlug } from "@/lib/slugUtils";
+import ApartmentSchema from "@/components/ApartmentSchema";
 
 // Server-side Fetch with Cache (60s)
 async function getProperties() {
@@ -279,51 +280,23 @@ export default async function PropertyPage({ params }: { params: Promise<{ id: s
             )}
 
             {/* JSON-LD Schema for Real Estate Listing */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "Apartment",
-                        "name": property.title,
-                        "description": property.description,
-                        "image": images.length > 0 ? images : ["https://ranchirent.in/property-placeholder.jpg"],
-                        "url": `https://ranchirent.in/property/${slug}`,
-                        "address": {
-                            "@type": "PostalAddress",
-                            "addressLocality": property.location,
-                            "addressRegion": "Jharkhand",
-                            "addressCountry": "IN"
-                        },
-                        "numberOfRooms": property.beds,
-                        "numberOfBathroomsTotal": property.baths,
-                        "floorSize": {
-                            "@type": "QuantitativeValue",
-                            "value": property.area,
-                            "unitCode": "FTK"
-                        },
-                        "amenityFeature": amenities.map((a: string) => ({
-                            "@type": "LocationFeatureSpecification",
-                            "name": a,
-                            "value": true
-                        })),
-                        "offers": {
-                            "@type": "Offer",
-                            "url": `https://ranchirent.in/property/${slug}`,
-                            "priceCurrency": "INR",
-                            "price": rawProperty.rent,
-                            "priceValidUntil": "2026-12-31",
-                            "availability": "https://schema.org/InStock"
-                        },
-                        "provider": {
-                            "@type": "RealEstateAgent",
-                            "name": "RanchiRent",
-                            "url": "https://ranchirent.in",
-                            "telephone": "+917557777987"
-                        }
-                    })
+            {/* JSON-LD Schema for Real Estate Listing using ApartmentSchema Component */}
+            <ApartmentSchema
+                title={property.title}
+                description={property.description}
+                price={Number(rawProperty.rent)}
+                address={{
+                    street: property.location,
+                    city: "Ranchi",
+                    region: "Jharkhand",
+                    postalCode: "834001", // Default as data is unavailable
+                    country: "IN"
                 }}
+                images={images.length > 0 ? images : ["https://ranchirent.in/property-placeholder.jpg"]}
+                numberOfRooms={property.beds}
+                floorSize={0} // Defaulting to 0 as area is currently 'On Request'
             />
+
         </main>
     );
 }
