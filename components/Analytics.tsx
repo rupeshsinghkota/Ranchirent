@@ -3,9 +3,9 @@ import Script from "next/script";
 export default function Analytics() {
     return (
         <>
-            {/* Google Analytics & Ads (Replace G-XXXXXXXXXX and AW-XXXXXXXXXX with your new IDs) */}
+            {/* Google Analytics & Ads */}
             <Script
-                src={`https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX`}
+                src={`https://www.googletagmanager.com/gtag/js?id=G-1VPLGKEXVE`}
                 strategy="afterInteractive"
             />
             <Script id="google-analytics" strategy="afterInteractive">
@@ -14,8 +14,8 @@ export default function Analytics() {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
-          gtag('config', 'G-XXXXXXXXXX'); 
-          gtag('config', 'AW-XXXXXXXXXX'); 
+          gtag('config', 'G-1VPLGKEXVE'); 
+          gtag('config', 'AW-16683904204'); 
         `}
             </Script>
 

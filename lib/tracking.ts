@@ -45,7 +45,10 @@ export const trackConversion = (event: TrackingEvent, params?: any) => {
                 break;
             case "Lead":
                 gaEventName = "generate_lead";
-                gaParams.type = "Tenant Requirement";
+                gaParams = {
+                    send_to: "AW-16683904204/aH6QCL_fxOAbEMzZwJM-", // Precise Conversion Label from Google Ads
+                    type: "Tenant Requirement"
+                };
                 break;
             case "SubmitApplication":
                 gaEventName = "form_submit";
@@ -61,8 +64,11 @@ export const trackConversion = (event: TrackingEvent, params?: any) => {
                 break;
             case "ScheduleVisit":
                 gaEventName = "generate_lead";
-                gaParams.event_category = "engagement";
-                gaParams.event_label = "schedule_visit";
+                gaParams = {
+                    send_to: "AW-16683904204/aH6QCL_fxOAbEMzZwJM-", // Using same lead conversion for visits
+                    event_category: "engagement",
+                    event_label: "schedule_visit"
+                };
                 break;
         }
 
