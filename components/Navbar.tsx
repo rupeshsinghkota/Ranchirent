@@ -85,7 +85,7 @@ export default function Navbar() {
                     </Link>
                     <div className="h-6 w-px bg-gray-200"></div>
                     <a
-                        href="tel:+917557777987"
+                        href="tel:+919507623858"
                         className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-bold text-white shadow-lg hover:bg-gray-800 hover:scale-105 transition-all"
                     >
                         <Phone className="h-4 w-4" />
@@ -142,7 +142,7 @@ export default function Navbar() {
                     <hr className="border-gray-100 my-2" />
                     <MobileLink href="/landlord" onClick={() => setIsMenuOpen(false)} active={isActive('/landlord')}>List Your Property</MobileLink>
                     <MobileLink href="/agent" onClick={() => setIsMenuOpen(false)} active={isActive('/agent')}>💰 Become Agent</MobileLink>
-                    <a href="tel:+917557777987" className="flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-bold mt-2 shadow-md active:scale-95 transition">
+                    <a href="tel:+919507623858" className="flex items-center justify-center gap-2 bg-blue-600 text-white py-3 rounded-xl font-bold mt-2 shadow-md active:scale-95 transition">
                         <Phone className="h-4 w-4" /> Call Now
                     </a>
                 </div>

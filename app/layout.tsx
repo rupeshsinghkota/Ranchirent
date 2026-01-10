@@ -110,7 +110,7 @@ const jsonLd = {
   name: "RanchiRent",
   description: "Verified flats, PG & rooms for rent in Ranchi. Direct owner contact, no brokerage spam.",
   url: "https://ranchirent.in",
-  telephone: "+91-7557777987",
+  telephone: "+91-9507623858",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Ranchi",

@@ -75,7 +75,7 @@ export default function BookingModal({ isOpen, onClose, propertyTitle, propertyL
 
     const handleWhatsAppRedirect = () => {
         const message = `Hello, I submitted a booking request for *${propertyTitle}* (ID: ${propertyId}).\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Date:* ${date}`;
-        window.open(`https://wa.me/917557777987?text=${encodeURIComponent(message)}`, '_blank');
+        window.open(`https://wa.me/919507623858?text=${encodeURIComponent(message)}`, '_blank');
         onClose();
     };
 

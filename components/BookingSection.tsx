@@ -37,7 +37,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
 
                 <div className="space-y-3">
                     <a
-                        href={`https://wa.me/917557777987?text=Hi, I saw ${propertyTitle} (ID: ${propertyId}) in ${propertyLocation} on RanchiRent.in. Need more info.`}
+                        href={`https://wa.me/919507623858?text=Hi, I saw ${propertyTitle} (ID: ${propertyId}) in ${propertyLocation} on RanchiRent.in. Need more info.`}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                         onClick={handleWhatsAppClick}
@@ -62,7 +62,7 @@ export default function BookingSection({ propertyTitle, propertyLocation, proper
             {/* Mobile Fixed Bottom Bar */}
             <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-50 flex items-center gap-3 shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.1)] pb-safe">
                 <a
-                    href={`https://wa.me/917557777987?text=Hi, I saw ${propertyTitle} in ${propertyLocation} on RanchiRent.in. Need more info.`}
+                    href={`https://wa.me/919507623858?text=Hi, I saw ${propertyTitle} in ${propertyLocation} on RanchiRent.in. Need more info.`}
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     onClick={handleWhatsAppClick}

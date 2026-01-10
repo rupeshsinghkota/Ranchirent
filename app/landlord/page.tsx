@@ -64,7 +64,7 @@ export default function LandlordPage() {
                         <h3 className="font-bold text-gray-900 text-lg mb-2">In a hurry?</h3>
                         <p className="text-gray-600 mb-4">Skip the form. Send us photos and details on WhatsApp directly.</p>
                         <a
-                            href="https://wa.me/917557777987?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
+                            href="https://wa.me/919507623858?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
                             target="_blank"
                             rel="noopener noreferrer nofollow"
                             className="inline-flex items-center gap-2 bg-[#25D366] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#20bd5a] transition shadow-lg hover:shadow-green-200"

@@ -155,7 +155,7 @@ export default function LandlordForm() {
             {/* Alternative: WhatsApp Listing */}
             <div className="border-b border-gray-100 bg-gray-50/50 p-4 text-center">
                 <a
-                    href="https://wa.me/917557777987?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
+                    href="https://wa.me/919507623858?text=Hi%20RanchiRent%2C%20I%20want%20to%20list%20my%20property."
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     onClick={() => {

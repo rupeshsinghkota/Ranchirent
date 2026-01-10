@@ -82,7 +82,7 @@ export default function PropertyCard({ property }: PropertyProps) {
 
                 <div className="mt-auto grid grid-cols-2 gap-2 hidden sm:grid">
                     <a
-                        href={`https://wa.me/917557777987?text=I am interested in ${property.title} at ${property.location}`}
+                        href={`https://wa.me/919507623858?text=I am interested in ${property.title} at ${property.location}`}
                         target="_blank"
                         rel="noopener noreferrer nofollow"
                         className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white py-2 text-xs font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition"

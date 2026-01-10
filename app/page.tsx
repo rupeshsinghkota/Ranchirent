@@ -154,7 +154,7 @@ export default function Home() {
                 <Link href="/landlord" className="px-8 py-4 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition shadow-lg text-center">
                   List Your Property
                 </Link>
-                <a href="https://wa.me/917557777987" target="_blank" rel="noopener noreferrer nofollow" className="px-8 py-4 bg-transparent border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+                <a href="https://wa.me/919507623858" target="_blank" rel="noopener noreferrer nofollow" className="px-8 py-4 bg-transparent border-2 border-white/30 text-white font-bold rounded-xl hover:bg-white/10 transition flex items-center justify-center gap-2">
                   <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-5 h-5 filter brightness-0 invert" alt="WhatsApp icon" />
                   WhatsApp Us
                 </a>
@@ -303,7 +303,7 @@ export default function Home() {
             "name": "RanchiRent",
             "image": "https://ranchirent.in/icon.png",
             "url": "https://ranchirent.in",
-            "telephone": "+917557777987",
+            "telephone": "+919507623858",
             "address": {
               "@type": "PostalAddress",
               "streetAddress": "Circular Road, Lalpur",
