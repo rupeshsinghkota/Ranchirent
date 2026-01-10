@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { X, Calendar, User, Phone, CheckCircle, Loader2 } from "lucide-react";
 
+import { trackConversion } from "@/lib/tracking";
+
 interface BookingModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -60,10 +62,8 @@ export default function BookingModal({ isOpen, onClose, propertyTitle, propertyL
                 body: JSON.stringify(formData),
             });
 
-            // Track Facebook Pixel Conversion
-            if (typeof window !== 'undefined' && (window as any).fbq) {
-                (window as any).fbq('track', 'Schedule');
-            }
+            // Track Conversion (Standardized)
+            trackConversion("ScheduleVisit", { property_id: propertyId, location: propertyLocation });
 
             setStatus("success");
             // Optional: Reset form after success delay or keep success state

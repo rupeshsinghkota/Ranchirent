@@ -3,7 +3,8 @@ type TrackingEvent =
     | "Lead"
     | "SubmitApplication"
     | "WhatsAppButtonClick"
-    | "CallButtonClick";
+    | "CallButtonClick"
+    | "ScheduleVisit";
 
 type GAEventName =
     | "generate_lead"
@@ -25,6 +26,8 @@ export const trackConversion = (event: TrackingEvent, params?: any) => {
     if (window.fbq) {
         if (["Contact", "Lead", "SubmitApplication"].includes(event)) {
             window.fbq("track", event, params);
+        } else if (event === "ScheduleVisit") {
+            window.fbq("track", "Schedule", params);
         } else {
             window.fbq("trackCustom", event, params);
         }
@@ -55,6 +58,11 @@ export const trackConversion = (event: TrackingEvent, params?: any) => {
             case "CallButtonClick":
                 gaEventName = "select_content";
                 gaParams.content_type = "call_button";
+                break;
+            case "ScheduleVisit":
+                gaEventName = "generate_lead";
+                gaParams.event_category = "engagement";
+                gaParams.event_label = "schedule_visit";
                 break;
         }
 
